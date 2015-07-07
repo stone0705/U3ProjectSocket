@@ -38,13 +38,15 @@ public class mainsocket {
 					br = new BufferedReader(
 					        new InputStreamReader(socket.getInputStream()));
 					bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-					while(socket.isConnected()&&br.read()!=-1){
-						if(br.ready()){
-							msg = br.readLine();
+					while(socket.isConnected()){
+						if((msg = br.readLine()) != null){
+							System.out.println(msg);
 							String[] a = new StringRule(msg).dString;
 							for(int i =0;i<a.length;i++){
 								System.out.println(a[i]);
 							}
+						}else{
+							break;
 						}
 						}
 					System.out.println("斷開連接");			

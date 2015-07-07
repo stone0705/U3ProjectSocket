@@ -20,7 +20,7 @@ public class login {
 				pass=pass.replaceAll(":", "/:");
 				System.out.println("ok   "+pass);
 				if(pass!=null){
-					bw.write(100+":"+pass+":"+"afsdfwe:");
+					bw.write(11010+":"+pass+":"+"afsdfwe:");
 					bw.write("\n");
 					bw.flush();
 				}

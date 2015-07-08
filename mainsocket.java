@@ -5,13 +5,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class mainsocket {
 	static BufferedReader br;
 	static BufferedWriter bw;
 	static String msg;
     private static int serverport = 5050;
-    private static ServerSocket serverSocket;
+    static ServerSocket serverSocket;
+    static HashMap<String,ArrayList<Socket>> meetingmap = new HashMap();
 	public static void main(String[] args){
 		try{
 			serverSocket = new ServerSocket(serverport);
@@ -42,6 +45,8 @@ public class mainsocket {
 						if((msg = br.readLine()) != null){
 							System.out.println(msg);
 							String[] a = new StringRule(msg).dString;
+							String response = LogicRule.switchcommit(a, socket);
+							
 							for(int i =0;i<a.length;i++){
 								System.out.println(a[i]);
 							}

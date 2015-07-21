@@ -6,10 +6,24 @@ public class StringRule {
 	static HashMap rulemap = new HashMap<String,Integer>();
 	public StringRule(String msg){
 		String[] findrule = msg.split(":");
-		rulemap.put("n1010", 3);
-		rulemap.put("n1030", 5);
-		rulemap.put("n1031", 5);
-		rulemap.put("n2030", 3);		
+        //註冊 1000 帳號 密碼 暱稱
+        rulemap.put("n1000", 4);
+        //登入  1010 帳號 密碼
+        rulemap.put("n1010", 3);
+        //進入 meeting 1030 帳號 android_id 群組 meeting_id
+        rulemap.put("n1030", 5);
+        //客戶端傳送訊息 1031 帳號 text 群組 meeting_id
+        rulemap.put("n1031", 5);
+        //伺服器端傳送訊息 2030 帳號 text
+        rulemap.put("n2030", 3);
+        //註冊成功 2000
+        rulemap.put("n2000", 1);
+        //註冊失敗 有相同的帳號 2001
+        rulemap.put("n2001", 1);
+        //登入成功 2010
+        rulemap.put("n2010", 1);
+        //登入失敗 帳號或密碼錯誤 2011
+        rulemap.put("n2011", 1);	
 		dString = divide(msg,rule(findrule[0]));
 	}
 	String[] divide(String msg,int number){

@@ -5,45 +5,88 @@ import java.net.Socket;
 
 public class AccountLogic {
 	public static String submit(String[] commit,Socket socket){
+		Sql sql = new Sql();
 		String response = "";
-		boolean pass = false;
 		rha256 sha = new rha256(commit[2]);
 		String account = commit[1];
 		String salt = sha.salt;
 		String hash = sha.hash;
+		String nick_name = commit[3];
+		boolean exist = sql.isAccountExist(account);
 		//if select account is empty then save salt hash account
-		if(pass){
+		
+		if(!exist){
+			sql.submitSql(account, hash, salt, nick_name);
 			response = "success";
-		}else{
-			response = "account already exist";
-		}
-		return response;
-	}
-	public static String login(String[] commit,Socket socket){
-		String response = "";
-		boolean pass = false;
-		String DBhash = "";
-		String DBsalt = "";
-		rha256 sha = new rha256(commit[2],DBsalt);
-		//if select account not empty
-		if(DBhash.equals(sha.hash)){
-			pass = true;
-		}
-		//pass = true;
-		if(pass){
-			response = "PASS";
-            BufferedWriter bw;
             try{
-                bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+        		BufferedWriter bw;
+        		bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                 // 寫入訊息到串流
-                bw.write("pass\n");
+                String msg = StringRule.standard(1, "2000");
+                bw.write(msg);
                 // 立即發送
                 bw.flush();
             }catch(Exception ex){	
             }
 		}else{
-			response = "account or password is wrong";
+			response = "account already exist";
+            try{
+        		BufferedWriter bw;
+        		bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+                // 寫入訊息到串流
+                String msg = StringRule.standard(1, "2001");
+                bw.write(msg);
+                // 立即發送
+                bw.flush();
+            }catch(Exception ex){	
+            }
 		}
+		sql.close();
+		return response;
+	}
+	public static String login(String[] commit,Socket socket){
+		Sql sql = new Sql();
+		String account = commit[1];
+		String response = "";
+		boolean pass = false;
+		boolean isExist = sql.isAccountExist(account);
+		System.out.println("帳號:"+account+"  帳號存在"+isExist);
+		if(isExist){
+			String[] DBset = sql.loginSql(account);
+			String DBhash = DBset[0];
+			String DBsalt = DBset[1];
+			rha256 sha = new rha256(commit[2],DBsalt);
+			if(DBhash.equals(sha.hash)){
+				pass = true;
+			}
+		}
+		//pass = true;
+		if(pass){    
+			response = "login success";
+            try{
+        		BufferedWriter bw;
+        		bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+                // 寫入訊息到串流
+                String msg = StringRule.standard(1, "2010");
+                bw.write(msg);
+                // 立即發送
+                bw.flush();
+            }catch(Exception ex){	
+            }
+		}else{
+			response = "login error";
+            try{
+        		BufferedWriter bw;
+        		bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+                // 寫入訊息到串流
+                String msg = StringRule.standard(1, "2011");
+                bw.write(msg);
+                // 立即發送
+                bw.flush();
+            }catch(Exception ex){	
+            }
+		}
+		sql.close();
 		return response;
 	}
 }

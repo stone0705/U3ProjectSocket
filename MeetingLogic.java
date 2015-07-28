@@ -5,12 +5,17 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class MeetingLogic {
+	static String createMeeting(String[] commit,Socket socket){
+		String answer = "";
+		
+		return answer;
+	}
 	static String firstconnect(String[] commit,Socket socket){
-		String key = commit[3]+":"+commit[4];
+		String key = commit[3];
 		String answer = "";
 		//DB find meeting	
 		if(mainsocket.meetingmap.containsKey(key)){
-			addsocket(commit[3]+":"+commit[4],socket);
+			addsocket(commit[3],socket);
 			//post txt
 		}else{
 			mainsocket.meetingmap.put(key,new ArrayList<Socket>());
@@ -20,7 +25,7 @@ public class MeetingLogic {
 		return answer;
 	}
 	static String receice(String[] commit,Socket socket){
-		String key = commit[3]+":"+commit[4];
+		String key = commit[3];
 		String account = commit[1];
 		String msg = commit[2];
 		castmsg(account,msg,key);
@@ -33,7 +38,7 @@ public class MeetingLogic {
         // 將players轉換成陣列存入ps
         mainsocket.meetingmap.get(key).toArray(ps);
         // 走訪ps中的每一個元素
-        String standardMsg = StringRule.standard(3,"2030",account,Msg);
+        String standardMsg = StringRule.standard("2030",account,Msg);
         for (Socket socket :ps ) {
             try {
                 // 創造網路輸出串流

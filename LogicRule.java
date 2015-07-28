@@ -12,9 +12,12 @@ public class LogicRule {
 		return AccountLogic.login(commit,socket);
 	}
 	case"1030":{
-		return MeetingLogic.firstconnect(commit, socket);
+		return MeetingLogic.createMeeting(commit, socket);
 	}
 	case"1031":{
+		return MeetingLogic.firstconnect(commit, socket);
+	}
+	case"1032":{
 		return MeetingLogic.receice(commit, socket);
 	}
 	}

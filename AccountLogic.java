@@ -22,7 +22,7 @@ public class AccountLogic {
         		BufferedWriter bw;
         		bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                 // 寫入訊息到串流
-                String msg = StringRule.standard(1, "2000");
+                String msg = StringRule.standard("2000");
                 bw.write(msg);
                 // 立即發送
                 bw.flush();
@@ -34,7 +34,7 @@ public class AccountLogic {
         		BufferedWriter bw;
         		bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                 // 寫入訊息到串流
-                String msg = StringRule.standard(1, "2001");
+                String msg = StringRule.standard("2001");
                 bw.write(msg);
                 // 立即發送
                 bw.flush();
@@ -67,7 +67,7 @@ public class AccountLogic {
         		BufferedWriter bw;
         		bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                 // 寫入訊息到串流
-                String msg = StringRule.standard(1, "2010");
+                String msg = StringRule.standard("2010");
                 bw.write(msg);
                 // 立即發送
                 bw.flush();
@@ -79,7 +79,7 @@ public class AccountLogic {
         		BufferedWriter bw;
         		bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                 // 寫入訊息到串流
-                String msg = StringRule.standard(1, "2011");
+                String msg = StringRule.standard("2011");
                 bw.write(msg);
                 // 立即發送
                 bw.flush();

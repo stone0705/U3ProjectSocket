@@ -1,9 +1,6 @@
 import java.sql.*;
 public class Sql {
 	static Connection con;
-	public static void main(String[] args){
-		Sql sql = new Sql();
-	}
 	public Sql(){
 		try{
 			String connectionUrl = "jdbc:sqlserver://122.116.189.126:49172;"+"databaseName=U3project;user=sa;password=lucky123;";
@@ -65,5 +62,37 @@ public class Sql {
 			pst.execute();
 		}catch(Exception ex){			
 		}
+	}
+	public ResultSet getMeetingSql(String name,String g_name,String g_founder){
+		ResultSet rs = null;
+		PreparedStatement pst;
+		String SQL = "select * "
+				+ "from theuser a join group_user b on a.name = b.u_name "
+				+ "where b.g_name = ? and b.g_founder = ? and a.name = ?";
+		try {
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, g_name);
+			pst.setString(2, g_founder);
+			pst.setString(3, name);
+			rs = pst.executeQuery();
+			if(rs.next()){
+				SQL = "select a.id,a.title,a.start_time,a.end_time "
+						+ "from meeting a join group_user b on a.g_name = b.g_name "
+						+ "where a.g_founder = ? and a.g_name = ? "
+						+ "order by start_time DESC ";
+				pst = con.prepareStatement(SQL);
+				pst.setString(1, g_founder);
+				pst.setString(2, g_name);
+				rs = pst.executeQuery();
+			}else{
+				rs = null;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return rs;
 	}
 }

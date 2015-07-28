@@ -44,12 +44,8 @@ public class mainsocket {
 					while(socket.isConnected()){
 						if((msg = br.readLine()) != null){
 							System.out.println(msg);
-							String[] a = new StringRule(msg).dString;
+							String[] a = StringRule.divide(msg);
 							String response = LogicRule.switchcommit(a, socket);
-							
-							for(int i =0;i<a.length;i++){
-								System.out.println(a[i]);
-							}
 						}else{
 							break;
 						}

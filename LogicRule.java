@@ -20,6 +20,9 @@ public class LogicRule {
 	case"1032":{
 		return MeetingLogic.receice(commit, socket);
 	}
+	case"1071":{
+		return masterpageLogic.getMeetingList(commit, socket);
+	}
 	}
 	return answer;
 	}

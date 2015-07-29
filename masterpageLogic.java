@@ -2,7 +2,6 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class masterpageLogic {
 	public static String getMeetingList(String[] commit,Socket socket){
@@ -18,10 +17,13 @@ public class masterpageLogic {
 				return "不在群組中";	
 			}
 			while(rs.next()){            
-                String standardMsg = StringRule.standard("2072",rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4));
+                String standardMsg = StringRule.standard("2071",rs.getString(1),rs.getString(2),rs.getTimestamp(3).toString(),rs.getTimestamp(4).toString());
                 bw.write(standardMsg);
                 bw.flush();
 			}
+			String standardMsg = StringRule.standard("0000");
+			bw.write(standardMsg);
+            bw.flush();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

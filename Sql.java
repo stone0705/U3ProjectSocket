@@ -3,7 +3,7 @@ public class Sql {
 	static Connection con;
 	public Sql(){
 		try{
-			String connectionUrl = "jdbc:sqlserver://122.116.189.126:49172;"+"databaseName=U3project;user=sa;password=lucky123;";
+			String connectionUrl = "jdbc:sqlserver://122.116.189.126:49172;"+"databaseName=U3project;user=U3sa;password=1234;";
 			con = DriverManager.getConnection(connectionUrl);
 		}
 		catch (Exception ex) {

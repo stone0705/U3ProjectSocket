@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class mainsocket {
 	static BufferedReader br;
 	static BufferedWriter bw;
-	static String msg;
+	static HashMap<Socket,String> meeting_id = new HashMap();
     private static int serverport = 5050;
     static ServerSocket serverSocket;
     static HashMap<String,ArrayList<Socket>> meetingmap = new HashMap();
@@ -37,6 +37,7 @@ public class mainsocket {
 			public void run() {
 				// TODO Auto-generated method stub
                 try {
+                	String msg;
                 	System.out.println("run");
 					br = new BufferedReader(
 					        new InputStreamReader(socket.getInputStream()));
@@ -50,6 +51,10 @@ public class mainsocket {
 							break;
 						}
 						}
+					if(meeting_id.containsKey(socket)){
+						MeetingLogic.adddelsocket(false, meeting_id.get(socket), socket);
+						System.out.println("刪除socket");
+					}
 					System.out.println("斷開連接");			
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

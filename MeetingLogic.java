@@ -13,13 +13,14 @@ public class MeetingLogic {
 	static String firstconnect(String[] commit,Socket socket){
 		String key = commit[3];
 		String answer = "";
+		mainsocket.meeting_id.put(socket, key);
 		//DB find meeting	
 		if(mainsocket.meetingmap.containsKey(key)){
-			addsocket(commit[3],socket);
+			adddelsocket(true,commit[3],socket);
 			//post txt
 		}else{
 			mainsocket.meetingmap.put(key,new ArrayList<Socket>());
-			addsocket(key,socket);
+			adddelsocket(true,key,socket);
 			//post txt
 		}
 		return answer;
@@ -55,9 +56,16 @@ public class MeetingLogic {
             }
         }
 	}
-	private synchronized static void addsocket(String key,Socket socket){
-		ArrayList<Socket> meetingList = mainsocket.meetingmap.get(key);
-		meetingList.add(socket);
-		mainsocket.meetingmap.put(key, meetingList);
+	synchronized static void adddelsocket(boolean choice,String key,Socket socket){
+		if(choice){
+			ArrayList<Socket> meetingList = mainsocket.meetingmap.get(key);
+			meetingList.add(socket);
+			mainsocket.meetingmap.put(key, meetingList);
+		}else{
+			ArrayList<Socket> meetingList = mainsocket.meetingmap.get(key);
+			meetingList.remove(socket);
+			mainsocket.meeting_id.remove(socket);
+			mainsocket.meetingmap.put(key, meetingList);
+		}
 	}
 }

@@ -16,7 +16,12 @@ public class masterpageLogic {
 				bw.flush();
 				return "不在群組中";	
 			}
-			while(rs.next()){            
+			while(rs.next()){ 
+				if(!rs.getBoolean(5)){
+					bw.write(StringRule.standard("2078"));
+					bw.flush();
+					return "尚未被加入群組";	
+				}
                 String standardMsg = StringRule.standard("2071",rs.getString(1),rs.getString(2),rs.getTimestamp(3).toString(),rs.getTimestamp(4).toString());
                 bw.write(standardMsg);
                 bw.flush();

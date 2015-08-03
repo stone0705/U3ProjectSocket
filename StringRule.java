@@ -81,6 +81,8 @@ public class StringRule {
         rulemap.put("n2071", 5);
         rulemap.put("n2072", 5);
         rulemap.put("n2073", 5);
+        //尚未被加入群組
+        rulemap.put("n2078", 1);
         //不在群組中
         rulemap.put("n2079", 1);
 		return (int) rulemap.get("n"+findrule);

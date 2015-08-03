@@ -76,7 +76,7 @@ public class Sql {
 			pst.setString(3, name);
 			rs = pst.executeQuery();
 			if(rs.next()){
-				SQL = "select a.id,a.title,a.start_time,a.end_time "
+				SQL = "select a.id,a.title,a.start_time,a.end_time,b.isjoin "
 						+ "from meeting a join group_user b on a.g_name = b.g_name "
 						+ "where a.g_founder = ? and a.g_name = ? "
 						+ "order by start_time DESC ";

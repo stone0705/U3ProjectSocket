@@ -104,17 +104,22 @@ public class MeetingLogic {
 	*/
 	static void postMeetingLog(String meetingid,Socket socket){
 		File file = new File(meetingid+".txt");
-		
-		try {		
-			BufferedReader br = new BufferedReader(new FileReader(file));
+		ReadWriteLock rwl = mainsocket.meetingFileLock.get(meetingid);
+		try {
             BufferedWriter bw;
             bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
-			while(br.ready()){
-				String Line = br.readLine();
-				String[] divide = Line.split(":", 2);       
-	            bw.write(StringRule.standard("2030",divide[0],divide[1]));
-	            System.out.println(StringRule.standard("2030",divide[0],divide[1]));
-	            bw.flush();
+			if(file.exists()){
+				rwl.lockRead();
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				while(br.ready()){
+					String Line = br.readLine();
+					String[] divide = Line.split(":", 2);       
+		            bw.write(StringRule.standard("2030",divide[0],divide[1]));
+		            System.out.println(StringRule.standard("2030",divide[0],divide[1]));
+		            bw.flush();
+				}
+				br.close();
+				rwl.unlockRead();
 			}
             bw.write(StringRule.standard("0000"));
             bw.flush();

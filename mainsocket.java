@@ -12,6 +12,8 @@ public class mainsocket {
 	static BufferedReader br;
 	static BufferedWriter bw;
 	static HashMap<Socket,String> meeting_id = new HashMap();
+	static HashMap<String,ReadWriteLock> meetingFileLock = new HashMap();
+	static Object obj = new Object();
     private static int serverport = 5050;
     static ServerSocket serverSocket;
     static HashMap<String,ArrayList<Socket>> meetingmap = new HashMap();
@@ -47,6 +49,7 @@ public class mainsocket {
 							System.out.println(msg);
 							String[] a = StringRule.divide(msg);
 							String response = LogicRule.switchcommit(a, socket);
+							System.out.println(response);
 						}else{
 							break;
 						}

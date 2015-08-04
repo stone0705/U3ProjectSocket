@@ -5,12 +5,17 @@ import java.sql.ResultSet;
 
 public class masterpageLogic {
 	public static String getMeetingList(String[] commit,Socket socket){
-		String answer = "";
 		Sql sql = new Sql();
+		String answer = "";
 		ResultSet rs = sql.getMeetingSql(commit[1], commit[3], commit[4]);
 		try {
 			BufferedWriter bw;
 			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+			if(!sql.compareAndroidID(commit[1], commit[2])){
+				bw.write(StringRule.standard("2077"));
+				bw.flush();
+				return "帳號已在其它裝置登入";	
+			}
 			if(rs == null){
 				bw.write(StringRule.standard("2079"));
 				bw.flush();

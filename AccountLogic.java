@@ -47,6 +47,7 @@ public class AccountLogic {
 	public static String login(String[] commit,Socket socket){
 		Sql sql = new Sql();
 		String account = commit[1];
+		String android_id = commit[3];
 		String response = "";
 		boolean pass = false;
 		boolean isExist = sql.isAccountExist(account);
@@ -71,6 +72,7 @@ public class AccountLogic {
                 bw.write(msg);
                 // 立即發送
                 bw.flush();
+                sql.insertSaveuser(account, android_id);
             }catch(Exception ex){	
             }
 		}else{

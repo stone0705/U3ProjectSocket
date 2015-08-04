@@ -1,5 +1,7 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -30,6 +32,7 @@ public class MeetingLogic {
 			adddelsocket(true,key,socket);
 			//post txt
 		}
+		postMeetingLog(commit[3],socket);
 		return answer;
 	}
 	static String receice(String[] commit,Socket socket){
@@ -65,7 +68,6 @@ public class MeetingLogic {
 	        try {
 	        	ReadWriteLock rwl = mainsocket.meetingFileLock.get(key);
 				rwl.lockWrite();
-				System.out.println("pass lock");
 				writeMeetingLog(key,Msg,account);
 				rwl.unlockWrite();
 			} catch (InterruptedException e) {
@@ -94,6 +96,27 @@ public class MeetingLogic {
 			meetingList.remove(socket);
 			mainsocket.meeting_id.remove(socket);
 			mainsocket.meetingmap.put(key, meetingList);
+		}
+	}
+	static void postMeetingLog(String meetingid,Socket socket){
+		File file = new File(meetingid+".txt");
+		
+		try {		
+			BufferedReader br = new BufferedReader(new FileReader(file));
+            BufferedWriter bw;
+            bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+			while(br.ready()){
+				String Line = br.readLine();
+				String[] divide = Line.split(":", 2);       
+	            bw.write(StringRule.standard("2030",divide[0],divide[1]));
+	            System.out.println(StringRule.standard("2030",divide[0],divide[1]));
+	            bw.flush();
+			}
+            bw.write(StringRule.standard("0000"));
+            bw.flush();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	synchronized static void writeMeetingLog(String meetingid,String msg,String account){

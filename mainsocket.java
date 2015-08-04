@@ -55,7 +55,8 @@ public class mainsocket {
 						}
 						}
 					if(meeting_id.containsKey(socket)){
-						MeetingLogic.adddelsocket(false, meeting_id.get(socket), socket);
+						ArrayList<Socket> socketlist = meetingmap.get(meeting_id.get(socket));
+						socketlist.remove(socket);
 						System.out.println("刪除socket");
 					}
 					System.out.println("斷開連接");			

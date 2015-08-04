@@ -25,11 +25,13 @@ public class MeetingLogic {
 			mainsocket.meetingFileLock.put(key, wrl);
 		}
 		if(mainsocket.meetingmap.containsKey(key)){
-			adddelsocket(true,commit[3],socket);
+			ArrayList<Socket> socketlist = mainsocket.meetingmap.get(key);
+			socketlist.add(socket);
 			//post txt
 		}else{
 			mainsocket.meetingmap.put(key,new ArrayList<Socket>());
-			adddelsocket(true,key,socket);
+			ArrayList<Socket> socketlist = mainsocket.meetingmap.get(key);
+			socketlist.add(socket);
 			//post txt
 		}
 		postMeetingLog(commit[3],socket);
@@ -86,6 +88,7 @@ public class MeetingLogic {
             } catch (IOException e) {}
 		}
 	}
+	/*
 	synchronized static void adddelsocket(boolean choice,String key,Socket socket){
 		if(choice){
 			ArrayList<Socket> meetingList = mainsocket.meetingmap.get(key);
@@ -98,6 +101,7 @@ public class MeetingLogic {
 			mainsocket.meetingmap.put(key, meetingList);
 		}
 	}
+	*/
 	static void postMeetingLog(String meetingid,Socket socket){
 		File file = new File(meetingid+".txt");
 		

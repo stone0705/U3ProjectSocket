@@ -114,8 +114,8 @@ public class MeetingLogic {
 				while(br.ready()){
 					String Line = br.readLine();
 					String[] divide = Line.split(":", 2);       
-		            bw.write(StringRule.standard("2030",divide[0],divide[1]));
-		            System.out.println(StringRule.standard("2030",divide[0],divide[1]));
+		            bw.write(StringRule.standard("2031",divide[0],divide[1]));
+		            System.out.println(StringRule.standard("2031",divide[0],divide[1]));
 		            bw.flush();
 				}
 				br.close();

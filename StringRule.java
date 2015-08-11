@@ -56,7 +56,7 @@ public class StringRule {
         rulemap.put("n1030", 7);
         //進入 meeting 1031 帳號 android_id 群組 meeting_id
         rulemap.put("n1031", 4);
-        //客戶端傳送訊息 1032 帳號 text 群組 meeting_id android_id
+        //客戶端傳送訊息 1032 帳號 text meeting_id android_id
         rulemap.put("n1032", 5);
         //獲得筆記列表 1070 帳號 android_id 群組 founder
         rulemap.put("n1070", 5);

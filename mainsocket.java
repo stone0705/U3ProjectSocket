@@ -15,6 +15,7 @@ public class mainsocket {
 	static HashMap<String,ReadWriteLock> meetingFileLock = new HashMap();
 	static Object obj = new Object();
     private static int serverport = 5050;
+    static Sql sql = new Sql();
     static ServerSocket serverSocket;
     static HashMap<String,ArrayList<Socket>> meetingmap = new HashMap();
 	public static void main(String[] args){

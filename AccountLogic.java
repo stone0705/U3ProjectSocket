@@ -5,18 +5,17 @@ import java.net.Socket;
 
 public class AccountLogic {
 	public static String submit(String[] commit,Socket socket){
-		Sql sql = new Sql();
 		String response = "";
 		rha256 sha = new rha256(commit[2]);
 		String account = commit[1];
 		String salt = sha.salt;
 		String hash = sha.hash;
 		String nick_name = commit[3];
-		boolean exist = sql.isAccountExist(account);
+		boolean exist = mainsocket.sql.isAccountExist(account);
 		//if select account is empty then save salt hash account
 		
 		if(!exist){
-			sql.submitSql(account, hash, salt, nick_name);
+			mainsocket.sql.submitSql(account, hash, salt, nick_name);
 			response = "success";
             try{
         		BufferedWriter bw;
@@ -41,19 +40,17 @@ public class AccountLogic {
             }catch(Exception ex){	
             }
 		}
-		sql.close();
 		return response;
 	}
 	public static String login(String[] commit,Socket socket){
-		Sql sql = new Sql();
 		String account = commit[1];
 		String android_id = commit[3];
 		String response = "";
 		boolean pass = false;
-		boolean isExist = sql.isAccountExist(account);
+		boolean isExist = mainsocket.sql.isAccountExist(account);
 		System.out.println("帳號:"+account+"  帳號存在"+isExist);
 		if(isExist){
-			String[] DBset = sql.loginSql(account);
+			String[] DBset = mainsocket.sql.loginSql(account);
 			String DBhash = DBset[0];
 			String DBsalt = DBset[1];
 			rha256 sha = new rha256(commit[2],DBsalt);
@@ -72,7 +69,7 @@ public class AccountLogic {
                 bw.write(msg);
                 // 立即發送
                 bw.flush();
-                sql.insertSaveuser(account, android_id);
+                mainsocket.sql.insertSaveuser(account, android_id);
             }catch(Exception ex){	
             }
 		}else{
@@ -88,7 +85,6 @@ public class AccountLogic {
             }catch(Exception ex){	
             }
 		}
-		sql.close();
 		return response;
 	}
 }

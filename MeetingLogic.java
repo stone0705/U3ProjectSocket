@@ -40,14 +40,12 @@ public class MeetingLogic {
 	static String receice(String[] commit,Socket socket){
 		String key = commit[3];
 		String account = commit[1];
-		String msg = commit[2];
-		castmsg(account,msg,key,commit[4],socket);
+		String msg = commit[2];	
 		//save to txt
-		return "";
+		return castmsg(account,msg,key,commit[4],socket);
 	}
-	private static void castmsg(String account,String Msg,String key,String android_id,Socket mysocket){
-		Sql sql = new Sql();
-		if(sql.compareAndroidID(account, android_id)){
+	private static String castmsg(String account,String Msg,String key,String android_id,Socket mysocket){
+		if(mainsocket.sql.compareAndroidID(account, android_id)){
 	        // 創造socket陣列
 	        Socket[] ps=new Socket[mainsocket.meetingmap.get(key).size()];
 	        // 將players轉換成陣列存入ps
@@ -65,7 +63,9 @@ public class MeetingLogic {
 	 
 	                // 立即發送
 	                bw.flush();
-	            } catch (IOException e) {}
+	            } catch (IOException e) {
+	            	return "castmsg:"+e.toString();
+	            }
 	        }
 	        try {
 	        	ReadWriteLock rwl = mainsocket.meetingFileLock.get(key);
@@ -74,7 +74,7 @@ public class MeetingLogic {
 				rwl.unlockWrite();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return "readwritelock:"+e.toString();
 			}
 		}else{
             try {
@@ -85,8 +85,10 @@ public class MeetingLogic {
                 bw.write(StringRule.standard("2077"));
                 // 立即發送
                 bw.flush();
+                return "android不合";
             } catch (IOException e) {}
 		}
+        return "傳送訊息完成";
 	}
 	/*
 	synchronized static void adddelsocket(boolean choice,String key,Socket socket){

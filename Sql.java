@@ -3,12 +3,12 @@ public class Sql {
 	static Connection con;
 	public Sql(){
 		try{
-			//String connectionUrl = "jdbc:sqlserver://122.116.189.126:49172;"+"databaseName=U3project;user=U3sa;password=1234;";
-			//con = DriverManager.getConnection(connectionUrl);
-			Class.forName("com.mysql.jdbc.Driver");
+			String connectionUrl = "jdbc:sqlserver://122.116.189.126:49172;"+"databaseName=U3project;user=U3sa;password=1234;";
+			con = DriverManager.getConnection(connectionUrl);
+			/*Class.forName("com.mysql.jdbc.Driver");
 		      con = DriverManager.getConnection( 
 		    	      "jdbc:mysql://127.0.0.1:3306/U3project?useUnicode=true", 
-		    	      "stone","Abcd1234"); 
+		    	      "stone","Abcd1234"); */
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();

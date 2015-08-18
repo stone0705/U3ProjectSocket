@@ -22,20 +22,38 @@ public class Sql {
 			e.printStackTrace();
 		}
 	}
-	public boolean isGroupExist(String account,String group){
+	public boolean isGroupExist(String founder,String group){
 		boolean exist = false;
 		try{
 			PreparedStatement pst;
 			String SQL = "SELECT * from thegroup where name = ? and founder = ?";
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, group);
-			pst.setString(2, account);
+			pst.setString(2, founder);
 			ResultSet rs = pst.executeQuery();
 			if(rs.next()){
 				exist = true;
 			}
 		}catch(Exception ex){
 			System.out.println(ex);
+		}
+		return exist;
+	}
+	public boolean isInGroup(String account,String group,String founder){
+		boolean exist = false;
+		try{
+			PreparedStatement pst;
+			String SQL = "SELECT * from group_user where g_name = ? and g_founder = ? and u_name = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, group);
+			pst.setString(2, founder);
+			pst.setString(3, account);
+			ResultSet rs = pst.executeQuery();
+			if(rs.next()){
+				exist = true;
+			}
+		}catch(Exception ex){
+			System.out.println("isInGroup:"+ex.toString());
 		}
 		return exist;
 	}
@@ -163,14 +181,34 @@ public class Sql {
 		}
 		return rs;
 	}
+	public ResultSet searchGroup(String text){
+		ResultSet rs = null;
+		PreparedStatement pst;
+		String SQL = "select * from thegroup where name like ? escape ?";
+		String param = text.replace("!","!!" );
+		param = param.replace("%", "!%");
+		param = param.replace("_", "!_");
+		param = "%" + param + "%";
+		try{
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, param);
+			pst.setString(2, "!");
+			rs = pst.executeQuery();
+			return rs;
+		}catch(Exception ex){
+			System.out.println("SQL searchGroup:"+ex.toString());
+		}
+		return rs;
+	}
 	public void createGroup(String account,String group){
 		try{
 			PreparedStatement pst;
-			String SQL = "INSERT into thegroup values(?,?,?)";
+			String SQL = "INSERT into thegroup values(?,?,?,?)";
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, group);
 			pst.setString(2, account);
 			pst.setInt(3, 1);
+			pst.setString(4, "");
 			pst.execute();
 			SQL = "INSERT into group_user values(?,?,?,?,?,?,?,?,?,?)";
 			pst = con.prepareStatement(SQL);
@@ -187,6 +225,26 @@ public class Sql {
 			pst.execute();
 		}catch(Exception ex){	
 			System.out.println(ex.toString());
+		}
+	}
+	public void applyGroup(String account,String group,String founder){
+		try{
+			PreparedStatement pst;
+			String SQL = "INSERT into group_user values(?,?,?,?,?,?,?,?,?,?)";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, group);
+			pst.setString(2, founder);
+			pst.setString(3, account);
+			pst.setBoolean(4, false);
+			pst.setBoolean(5, false);
+			pst.setBoolean(6, false);
+			pst.setBoolean(7, false);
+			pst.setBoolean(8, false);
+			pst.setBoolean(9, false);
+			pst.setBoolean(10, false);
+			pst.execute();
+		}catch(Exception ex){
+			System.out.println("applyGroup:"+ex.toString());
 		}
 	}
 }

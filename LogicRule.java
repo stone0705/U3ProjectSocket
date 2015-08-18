@@ -26,6 +26,12 @@ public class LogicRule {
 	case"1100":{
 		return GroupLogic.createGroup(commit, socket);
 	}
+	case "1101":{
+		return GroupLogic.searchGroup(commit, socket);
+	}
+	case "1102":{
+		return GroupLogic.applyGroup(commit, socket);
+	}
 	}
 	return answer;
 	}

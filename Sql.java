@@ -22,6 +22,38 @@ public class Sql {
 			e.printStackTrace();
 		}
 	}
+	public String getNickName(String account){
+		try{
+			PreparedStatement pst;
+			String SQL = "SELECT nick_name from theuser where name = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, account);
+			ResultSet rs = pst.executeQuery();
+			rs.next();
+			return rs.getString(1);
+		}catch(Exception ex){
+			System.out.println(ex);
+		}
+		return "";
+	}
+	public boolean isAddPermit(String account,String group,String founder){
+		boolean exist = false;
+		try{
+			PreparedStatement pst;
+			String SQL = "SELECT add_permit from group_user where u_name = ? and g_name = ? and g_founder = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, account);
+			pst.setString(2, group);
+			pst.setString(3, founder);
+			ResultSet rs = pst.executeQuery();
+			if(rs.next()){
+				exist = rs.getBoolean(1);
+			}
+		}catch(Exception ex){
+			System.out.println(ex);
+		}
+		return exist;
+	}
 	public boolean isGroupExist(String founder,String group){
 		boolean exist = false;
 		try{
@@ -36,6 +68,23 @@ public class Sql {
 			}
 		}catch(Exception ex){
 			System.out.println(ex);
+		}
+		return exist;
+	}
+	public boolean isAddInGroup(String account,String group,String founder){
+		boolean exist = false;
+		try{
+			PreparedStatement pst;
+			String SQL = "SELECT isjoin from group_user where g_name = ? and g_founder = ? and u_name = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, group);
+			pst.setString(2, founder);
+			pst.setString(3, account);
+			ResultSet rs = pst.executeQuery();
+			rs.next();
+			exist = rs.getBoolean(1);
+		}catch(Exception ex){
+			System.out.println("isInGroup:"+ex.toString());
 		}
 		return exist;
 	}
@@ -154,27 +203,17 @@ public class Sql {
 	public ResultSet getMeetingSql(String name,String g_name,String g_founder){
 		ResultSet rs = null;
 		PreparedStatement pst;
-		String SQL = "select * "
-				+ "from theuser a join group_user b on a.name = b.u_name "
-				+ "where b.g_name = ? and b.g_founder = ? and a.name = ?";
+		String SQL;
 		try {
+			SQL = "select a.id,a.title,a.start_time,a.end_time "
+					+ "from meeting a join group_user b on a.g_name = b.g_name "
+					+ "where a.g_founder = ? and a.g_name = ? and b.u_name = ? "
+					+ "order by start_time DESC ";
 			pst = con.prepareStatement(SQL);
-			pst.setString(1, g_name);
-			pst.setString(2, g_founder);
+			pst.setString(1, g_founder);
+			pst.setString(2, g_name);
 			pst.setString(3, name);
 			rs = pst.executeQuery();
-			if(rs.next()){
-				SQL = "select a.id,a.title,a.start_time,a.end_time,b.isjoin "
-						+ "from meeting a join group_user b on a.g_name = b.g_name "
-						+ "where a.g_founder = ? and a.g_name = ? "
-						+ "order by start_time DESC ";
-				pst = con.prepareStatement(SQL);
-				pst.setString(1, g_founder);
-				pst.setString(2, g_name);
-				rs = pst.executeQuery();
-			}else{
-				rs = null;
-			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -200,7 +239,22 @@ public class Sql {
 		}
 		return rs;
 	}
-	public void createGroup(String account,String group){
+	public ResultSet selectGroup(String account){
+		ResultSet rs = null;
+		PreparedStatement pst;
+		String SQL = "select distinct g_name,founder,number,description "
+				+ "from group_user a join thegroup b on a.g_name = b.name and a.g_founder = b.founder "
+				+ "where u_name = ?";
+		try{
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, account);
+			rs = pst.executeQuery();
+		}catch(Exception ex){
+			System.out.println("selectGroup SQL:"+ex.toString());
+		}
+		return rs;
+	}
+	public void createGroup(String account,String nickname,String group){
 		try{
 			PreparedStatement pst;
 			String SQL = "INSERT into thegroup values(?,?,?,?)";
@@ -210,41 +264,103 @@ public class Sql {
 			pst.setInt(3, 1);
 			pst.setString(4, "");
 			pst.execute();
-			SQL = "INSERT into group_user values(?,?,?,?,?,?,?,?,?,?)";
+			long timeInMillis = System.currentTimeMillis();
+	        Timestamp ts = new Timestamp(timeInMillis);
+			SQL = "INSERT into group_user values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, group);
 			pst.setString(2, account);
 			pst.setString(3, account);
-			pst.setBoolean(4, true);
+			pst.setString(4, nickname);
 			pst.setBoolean(5, true);
 			pst.setBoolean(6, true);
 			pst.setBoolean(7, true);
 			pst.setBoolean(8, true);
 			pst.setBoolean(9, true);
 			pst.setBoolean(10, true);
+			pst.setBoolean(11, true);
+			pst.setBoolean(12, true);
+			pst.setTimestamp(13, ts);
 			pst.execute();
 		}catch(Exception ex){	
 			System.out.println(ex.toString());
 		}
 	}
-	public void applyGroup(String account,String group,String founder){
+	public void applyGroup(String account,String nickname,String group,String founder){
 		try{
 			PreparedStatement pst;
-			String SQL = "INSERT into group_user values(?,?,?,?,?,?,?,?,?,?)";
+			long timeInMillis = System.currentTimeMillis();
+	        Timestamp ts = new Timestamp(timeInMillis);
+			String SQL = "INSERT into group_user values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, group);
 			pst.setString(2, founder);
 			pst.setString(3, account);
-			pst.setBoolean(4, false);
+			pst.setString(4, nickname);
 			pst.setBoolean(5, false);
 			pst.setBoolean(6, false);
 			pst.setBoolean(7, false);
 			pst.setBoolean(8, false);
 			pst.setBoolean(9, false);
 			pst.setBoolean(10, false);
+			pst.setBoolean(11, false);
+			pst.setBoolean(12, false);
+			pst.setTimestamp(13, ts);
+			pst.execute();
+			SQL = "update thegroup set number = number + 1 where name = ? and founder = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, group);
+			pst.setString(2, founder);
 			pst.execute();
 		}catch(Exception ex){
 			System.out.println("applyGroup:"+ex.toString());
+		}
+	}
+	public static ResultSet getIsJoinMember(String name,String founder){
+		ResultSet rs = null;
+		PreparedStatement pst;
+		String SQL = "select u_name,u_nick_name,add_permit,remove_permit,note_permit,meeting_permit"
+				+ ",vote_permit,schdule_permit,isfounder,enter_time from group_user "
+				+ "where g_name = ? and g_founder = ? and isjoin = ?";
+		try{
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, name);
+			pst.setString(2, founder);
+			pst.setBoolean(3, true);
+			rs = pst.executeQuery();
+		}catch(Exception ex){
+			System.out.println("getIsJoinMember SQL:"+ex.toString());
+		}
+		return rs;
+	}
+	public static ResultSet getNotJoinMember(String name,String founder){
+		ResultSet rs = null;
+		PreparedStatement pst;
+		String SQL = "select u_name,u_nick_name,enter_time from group_user "
+				+ "where g_name = ? and g_founder = ? and isjoin = ?";
+		try{
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, name);
+			pst.setString(2, founder);
+			pst.setBoolean(3, false);
+			rs = pst.executeQuery();
+		}catch(Exception ex){
+			System.out.println("getIsJoinMember SQL:"+ex.toString());
+		}
+		return rs;
+	}
+	public void letHeIn(String group,String founder,String u_name){
+		try{
+			PreparedStatement pst;
+			String SQL = "update group_user set isjoin = ? where g_name = ? and g_founder = ? and u_name = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setBoolean(1, true);
+			pst.setString(2, group);
+			pst.setString(3, founder);
+			pst.setString(4, u_name);
+			pst.execute();
+		}catch(Exception ex){
+			System.out.println("LetHeIn SQL:"+ex.toString());
 		}
 	}
 }

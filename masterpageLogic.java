@@ -21,12 +21,12 @@ public class masterpageLogic {
 				bw.flush();
 				return "不在群組中";	
 			}
+			if(!mainsocket.sql.isAddInGroup(commit[1], commit[3], commit[4])){
+				bw.write(StringRule.standard("2078"));
+				bw.flush();
+				return "尚未被加入群組";
+			}
 			while(rs.next()){ 
-				if(!rs.getBoolean(5)){
-					bw.write(StringRule.standard("2078"));
-					bw.flush();
-					return "尚未被加入群組";	
-				}
                 String standardMsg = StringRule.standard("2071",rs.getString(1),rs.getString(2),rs.getTimestamp(3).toString(),rs.getTimestamp(4).toString());
                 bw.write(standardMsg);
                 bw.flush();
@@ -37,7 +37,8 @@ public class masterpageLogic {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "getMeetingList:"+e.toString();
 		}
-		return answer;
+		return "清單傳送完成";
 	}
 }

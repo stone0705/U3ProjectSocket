@@ -32,6 +32,18 @@ public class LogicRule {
 	case "1102":{
 		return GroupLogic.applyGroup(commit, socket);
 	}
+	case "1103":{
+		return GroupLogic.selectGroup(commit, socket);
+	}
+	case "1104":{
+		return GroupLogic.postIsJoinList(commit, socket);
+	}
+	case "1105":{
+		return GroupLogic.postNotJoinList(commit, socket);
+	}
+	case "1106":{
+		return GroupLogic.LetHeIn(commit, socket);
+	}
 	}
 	return answer;
 	}

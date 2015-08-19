@@ -26,8 +26,7 @@ public class mainsocket {
 				if(socket.isConnected()){
 					System.out.println("connect");
 					connect(socket);
-				}
-				
+				}			
 			}
 		}
 		catch(Exception ex){

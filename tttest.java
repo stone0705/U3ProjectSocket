@@ -19,6 +19,17 @@ public class tttest {
 		list2.add("sdfsdf");
 		list2.add("sdfsdf");
 		System.out.println(list2.size()+"  "+map.get(1).size());
+		boolean ddd = true;
+		System.out.println(ddd);
+		Boolean dd  =true;
+		
+		String adad = dd.toString();
+		System.out.println(adad);
+		dd = Boolean.valueOf(adad);
+		System.out.println(dd);
+		ddd =dd;
+		
+		
 	}
 }
 class aaa{

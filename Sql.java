@@ -54,6 +54,24 @@ public class Sql {
 		}
 		return exist;
 	}
+	public boolean isMeetingPermit(String account,String group,String founder){
+		boolean exist = false;
+		try{
+			PreparedStatement pst;
+			String SQL = "SELECT meeting_permit from group_user where u_name = ? and g_name = ? and g_founder = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, account);
+			pst.setString(2, group);
+			pst.setString(3, founder);
+			ResultSet rs = pst.executeQuery();
+			if(rs.next()){
+				exist = rs.getBoolean(1);
+			}
+		}catch(Exception ex){
+			System.out.println(ex);
+		}
+		return exist;
+	}
 	public boolean isGroupExist(String founder,String group){
 		boolean exist = false;
 		try{
@@ -197,7 +215,7 @@ public class Sql {
 			pst.setString(3, salt);
 			pst.setString(4, nick_name);
 			pst.execute();
-		}catch(Exception ex){			
+		}catch(Exception ex){	
 		}
 	}
 	public ResultSet getMeetingSql(String name,String g_name,String g_founder){
@@ -253,6 +271,21 @@ public class Sql {
 			System.out.println("selectGroup SQL:"+ex.toString());
 		}
 		return rs;
+	}
+	public void createMeeting(String group,String founder,String title,Timestamp sts,Timestamp ets){
+		try{
+			PreparedStatement pst;
+			String SQL = "INSERT into meeting values(?,?,?,?,?)";
+			pst = con.prepareStatement(SQL);
+			pst.setTimestamp(1, sts);
+			pst.setTimestamp(2, ets);
+			pst.setString(3, title);
+			pst.setString(4, group);
+			pst.setString(5, founder);
+			pst.execute();
+			}catch(Exception ex){
+				System.out.println("createMeeting SQL:"+ex.toString());
+			}
 	}
 	public void createGroup(String account,String nickname,String group){
 		try{

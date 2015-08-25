@@ -7,7 +7,11 @@ public class masterpageLogic {
 	public static String getMeetingList(String[] commit,Socket socket){
 		Sql sql = new Sql();
 		String answer = "";
-		ResultSet rs = sql.getMeetingSql(commit[1], commit[3], commit[4]);
+		String account = commit[1];
+		String android_id = commit[2];
+		String group = commit[3];
+		String founder = commit[4];
+		ResultSet rs = sql.getMeetingSql(account, group, founder);
 		try {
 			BufferedWriter bw;
 			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
@@ -16,12 +20,12 @@ public class masterpageLogic {
 				bw.flush();
 				return "帳號已在其它裝置登入";	
 			}
-			if(rs == null){
+			if(!mainsocket.sql.isInGroup(account, group, founder)){
 				bw.write(StringRule.standard("2079"));
 				bw.flush();
 				return "不在群組中";	
 			}
-			if(!mainsocket.sql.isAddInGroup(commit[1], commit[3], commit[4])){
+			if(!mainsocket.sql.isAddInGroup(account, group, founder)){
 				bw.write(StringRule.standard("2078"));
 				bw.flush();
 				return "尚未被加入群組";

@@ -7,14 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class MeetingLogic {
-	static String createMeeting(String[] commit,Socket socket){
-		String answer = "";
-		
-		return answer;
-	}
 	static String firstconnect(String[] commit,Socket socket){
 		String key = commit[3];
 		String answer = "";
@@ -117,9 +113,9 @@ public class MeetingLogic {
 					String Line = br.readLine();
 					String[] divide = Line.split(":", 2);       
 		            bw.write(StringRule.standard("2031",divide[0],divide[1]));
-		            System.out.println(StringRule.standard("2031",divide[0],divide[1]));
-		            bw.flush();
+		            //System.out.println(StringRule.standard("2031",divide[0],divide[1]));           
 				}
+				bw.flush();
 				br.close();
 				rwl.unlockRead();
 			}

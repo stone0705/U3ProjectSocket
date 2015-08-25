@@ -1,9 +1,13 @@
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class tttest {
-	public static void main(String[] args){
+	public static void main(String[] args) throws ParseException{
 		HashMap<Integer,aaa> a = new HashMap();
 		aaa b = new aaa();
 		a.put(1, b);
@@ -28,8 +32,8 @@ public class tttest {
 		dd = Boolean.valueOf(adad);
 		System.out.println(dd);
 		ddd =dd;
-		
-		
+		Timestamp ts = Timestamp.valueOf("2015-8-25 11:7:0");
+		System.out.println(ts.toString());
 	}
 }
 class aaa{

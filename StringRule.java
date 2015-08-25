@@ -52,8 +52,8 @@ public class StringRule {
         rulemap.put("n1000", 4);
         //登入  1010 帳號 密碼 android_id
         rulemap.put("n1010", 4);
-        //創建 meeting 1030 帳號 android_id 群組 title start_time end_time
-        rulemap.put("n1030", 7);
+        //創建 meeting 1030 帳號 android_id 群組 founder title start_time end_time
+        rulemap.put("n1030", 8);
         //進入 meeting 1031 帳號 android_id 群組 meeting_id
         rulemap.put("n1031", 4);
         //客戶端傳送訊息 1032 帳號 text meeting_id android_id
@@ -121,8 +121,28 @@ public class StringRule {
         rulemap.put("n2107", 4);
         //加入成功 2108
         rulemap.put("n2108", 1);
-        //加入權限不足 2109
+        //踢除成功 2109
         rulemap.put("n2109", 1);
+        //創建筆記成功 2110
+        rulemap.put("n2110", 1);
+        //創建會議成功 2111
+        rulemap.put("n2111", 1);
+        //創建投票成功 2112
+        rulemap.put("n2112", 1);
+        //創建行事曆成功
+        rulemap.put("n2113", 1);
+        //加入權限不足 2190
+        rulemap.put("n2190", 1);
+        //踢除權限不足
+        rulemap.put("n2191", 1);
+        //筆記權限不足
+        rulemap.put("n2192", 1);
+        //會議權限不足
+        rulemap.put("n2193", 1);
+        //投票權限不足
+        rulemap.put("n2194", 1);
+        //行事曆權限不足
+        rulemap.put("n2195", 1);
 		return (int) rulemap.get("n"+findrule);
 	}
     public static String standard(String... word){

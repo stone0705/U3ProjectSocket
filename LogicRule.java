@@ -44,6 +44,9 @@ public class LogicRule {
 	case "1106":{
 		return GroupLogic.LetHeIn(commit, socket);
 	}
+	case "1107":{
+		return GroupLogic.changeMemberRight(commit, socket);
+	}
 	}
 	return answer;
 	}

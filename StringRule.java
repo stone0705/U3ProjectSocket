@@ -80,6 +80,8 @@ public class StringRule {
         rulemap.put("n1105", 3);
         //同意加入 1106 帳號 android_id 群組 founder u_name
         rulemap.put("n1106", 6);
+        //修改會員權限 1107 帳號 android_id 群組 founder u_name add_permit remove_permit note_permit meeting_permit vote_permit sch_permit
+        rulemap.put("n1107", 12);
         //伺服器端傳送訊息 2030 帳號 text
         rulemap.put("n2030", 3);
         //伺服器端傳送歷史訊息 2031 帳號 text
@@ -131,6 +133,8 @@ public class StringRule {
         rulemap.put("n2112", 1);
         //創建行事曆成功
         rulemap.put("n2113", 1);
+        //會員權限修改成功 2114
+        rulemap.put("n2114", 1);
         //加入權限不足 2190
         rulemap.put("n2190", 1);
         //踢除權限不足
@@ -143,6 +147,8 @@ public class StringRule {
         rulemap.put("n2194", 1);
         //行事曆權限不足
         rulemap.put("n2195", 1);
+        //不是founder 2196
+        rulemap.put("n2196", 1);
 		return (int) rulemap.get("n"+findrule);
 	}
     public static String standard(String... word){

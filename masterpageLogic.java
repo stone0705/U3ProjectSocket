@@ -15,7 +15,7 @@ public class masterpageLogic {
 		try {
 			BufferedWriter bw;
 			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
-			if(!sql.compareAndroidID(commit[1], commit[2])){
+			if(!sql.compareAndroidID(account,android_id)){
 				bw.write(StringRule.standard("2077"));
 				bw.flush();
 				return "帳號已在其它裝置登入";	

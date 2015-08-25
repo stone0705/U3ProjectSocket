@@ -44,6 +44,7 @@ public class AccountLogic {
 	}
 	public static String login(String[] commit,Socket socket){
 		String account = commit[1];
+		String password = commit[2];
 		String android_id = commit[3];
 		String response = "";
 		boolean pass = false;
@@ -53,7 +54,7 @@ public class AccountLogic {
 			String[] DBset = mainsocket.sql.loginSql(account);
 			String DBhash = DBset[0];
 			String DBsalt = DBset[1];
-			rha256 sha = new rha256(commit[2],DBsalt);
+			rha256 sha = new rha256(password,DBsalt);
 			if(DBhash.equals(sha.hash)){
 				pass = true;
 			}

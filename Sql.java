@@ -396,4 +396,25 @@ public class Sql {
 			System.out.println("LetHeIn SQL:"+ex.toString());
 		}
 	}
+	public void setMemberRight(String group,String founder,String u_name,boolean add,boolean remove,boolean note,boolean meeting,boolean vote,boolean sch){
+		try{
+			PreparedStatement pst;
+			String SQL = "update group_user set add_permit = ?,remove_permit = ?,note_permit = ?"
+					+ ",meeting_permit = ?,vote_permit = ?,schdule_permit = ? "
+					+ "where g_name = ? and g_founder = ? and u_name = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setBoolean(1, add);
+			pst.setBoolean(2, remove);
+			pst.setBoolean(3, note);
+			pst.setBoolean(4, meeting);
+			pst.setBoolean(5, vote);
+			pst.setBoolean(6, sch);
+			pst.setString(7, group);
+			pst.setString(8, founder);
+			pst.setString(9, u_name);
+			pst.execute();
+		}catch(Exception ex){
+			System.out.println("changeMemberRight SQL:"+ex.toString());
+		}
+	}
 }

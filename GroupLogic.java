@@ -37,7 +37,8 @@ public class GroupLogic {
 		}
 	}
 	public static String searchGroup(String[] commit,Socket socket){
-		ResultSet rs = mainsocket.sql.searchGroup(commit[1]);
+		String keyword = commit[1];
+		ResultSet rs = mainsocket.sql.searchGroup(keyword);
 		BufferedWriter bw;
 		try{
 			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
@@ -91,7 +92,9 @@ public class GroupLogic {
 		}
 	}
 	public static String selectGroup(String[] commit,Socket socket){
-		boolean goodaccess =  mainsocket.sql.compareAndroidID(commit[1], commit[2]);
+		String account = commit[1];
+		String android_id = commit[2];
+		boolean goodaccess =  mainsocket.sql.compareAndroidID(account,android_id);
 		try{
 			BufferedWriter bw;
 			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
@@ -100,7 +103,7 @@ public class GroupLogic {
 				bw.flush();
 				return "帳號已在其他裝置登入";
 			}else{
-				ResultSet rs = mainsocket.sql.selectGroup(commit[1]);
+				ResultSet rs = mainsocket.sql.selectGroup(account);
 				if(!rs.next()){
 					bw.write(StringRule.standard("2103"));
 					bw.flush();
@@ -207,7 +210,7 @@ public class GroupLogic {
 			return("LetHeIn GroupLogic:"+ex.toString());
 		}
 	}
-	static String createMeeting(String[] commit,Socket socket){
+	public static String createMeeting(String[] commit,Socket socket){
 		String account = commit[1];
 		String android_id = commit[2];
 		String group = commit[3];
@@ -242,6 +245,41 @@ public class GroupLogic {
 			}
 		}catch(Exception ex){
 			return "createMeeting:"+ex.toString();
+		}
+	}
+	public static String changeMemberRight(String[] commit,Socket socket){
+		String account = commit[1];
+		String android_id = commit[2];
+		String group = commit[3];
+		String founder = commit[4];
+		String u_name = commit[5];
+		boolean add = Boolean.valueOf(commit[6]);
+		boolean remove = Boolean.valueOf(commit[7]);
+		boolean note = Boolean.valueOf(commit[8]);
+		boolean meeting = Boolean.valueOf(commit[9]);
+		boolean vote = Boolean.valueOf(commit[10]);
+		boolean sch = Boolean.valueOf(commit[11]);
+		try{
+			BufferedWriter bw;
+			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+			if(mainsocket.sql.compareAndroidID(account, android_id)){
+				if(account.equals(founder)){
+					mainsocket.sql.setMemberRight(group, founder, u_name, add, remove, note, meeting, vote, sch);
+					bw.write(StringRule.standard("2114"));
+					bw.flush();
+					return "修改會員權限完成";
+				}else{
+					bw.write(StringRule.standard("2096"));
+					bw.flush();
+					return "沒有修改會員權限";
+				}
+			}else{
+				bw.write(StringRule.standard("2077"));
+				bw.flush();
+				return "帳號已在其他裝置登入";
+			}
+		}catch(Exception ex){
+			return "changeMemberRight:"+ex.toString();
 		}
 	}
 }

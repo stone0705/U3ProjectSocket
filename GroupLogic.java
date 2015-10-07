@@ -269,7 +269,7 @@ public class GroupLogic {
 					bw.flush();
 					return "修改會員權限完成";
 				}else{
-					bw.write(StringRule.standard("2096"));
+					bw.write(StringRule.standard("2196"));
 					bw.flush();
 					return "沒有修改會員權限";
 				}

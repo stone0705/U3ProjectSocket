@@ -417,4 +417,20 @@ public class Sql {
 			System.out.println("changeMemberRight SQL:"+ex.toString());
 		}
 	}
+	public ResultSet getANT(String group,String founder){
+		ResultSet rs = null;
+		try{
+			PreparedStatement pst;
+			String SQL = "select u_name,u_nick_name from group_user "
+				+ "where g_name = ? and g_founder = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, group);
+			pst.setString(2, founder);
+			rs = pst.executeQuery();
+			
+		}catch(Exception ex){
+			System.out.println("ANT SQL:"+ex.toString());
+		}
+		return rs;
+	}
 }

@@ -6,7 +6,15 @@ public class StringRule {
 	static HashMap rulemap = new HashMap<String,Integer>();
 	public static String[] divide(String msg){
 		String[] findrule = msg.split(":");	
-		int number = rule(findrule[0]);
+		int number;
+		try{
+			number = rule(findrule[0]);
+		}catch(Exception ex){
+			String[] a = new String[1];
+			a[0] = "???";
+			System.out.println("錯誤訊息格式");
+			return a;
+		}
 		String[] answer = new String[number];
 		int state = 0;
 		int index = 0;
@@ -54,8 +62,8 @@ public class StringRule {
         rulemap.put("n1010", 4);
         //創建 meeting 1030 帳號 android_id 群組 founder title start_time end_time
         rulemap.put("n1030", 8);
-        //進入 meeting 1031 帳號 android_id 群組 meeting_id
-        rulemap.put("n1031", 4);
+        //進入 meeting 1031 帳號 android_id 群組 meeting_id group founder
+        rulemap.put("n1031", 6);
         //客戶端傳送訊息 1032 帳號 text meeting_id android_id
         rulemap.put("n1032", 5);
         //獲得筆記列表 1070 帳號 android_id 群組 founder
@@ -86,6 +94,8 @@ public class StringRule {
         rulemap.put("n2030", 3);
         //伺服器端傳送歷史訊息 2031 帳號 text
         rulemap.put("n2031", 3);
+        //伺服器傳送ANT列表 2032 帳號 nickname
+        rulemap.put("n2032",3);
         //註冊成功 2000
         rulemap.put("n2000", 1);
         //註冊失敗 有相同的帳號 2001

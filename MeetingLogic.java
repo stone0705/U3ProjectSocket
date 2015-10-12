@@ -7,12 +7,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class MeetingLogic {
 	static String firstconnect(String[] commit,Socket socket){
 		String key = commit[3];
+		String group = commit[4];
+		String founder = commit[5];
 		String answer = "";
 		mainsocket.meeting_id.put(socket, key);
 		//DB find meeting	
@@ -30,7 +33,7 @@ public class MeetingLogic {
 			socketlist.add(socket);
 			//post txt
 		}
-		postMeetingLog(commit[3],socket);
+		postMeetingLog(key,group,founder,socket);
 		return answer;
 	}
 	static String receice(String[] commit,Socket socket){
@@ -86,26 +89,18 @@ public class MeetingLogic {
 		}
         return "傳送訊息完成";
 	}
-	/*
-	synchronized static void adddelsocket(boolean choice,String key,Socket socket){
-		if(choice){
-			ArrayList<Socket> meetingList = mainsocket.meetingmap.get(key);
-			meetingList.add(socket);
-			mainsocket.meetingmap.put(key, meetingList);
-		}else{
-			ArrayList<Socket> meetingList = mainsocket.meetingmap.get(key);
-			meetingList.remove(socket);
-			mainsocket.meeting_id.remove(socket);
-			mainsocket.meetingmap.put(key, meetingList);
-		}
-	}
-	*/
-	static void postMeetingLog(String meetingid,Socket socket){
+	static void postMeetingLog(String meetingid,String group,String founder,Socket socket){
 		File file = new File(meetingid+".txt");
 		ReadWriteLock rwl = mainsocket.meetingFileLock.get(meetingid);
 		try {
             BufferedWriter bw;
             bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+			ResultSet ANT = mainsocket.sql.getANT(group,founder);
+			while(ANT.next()){
+				bw.write(StringRule.standard("2032",ANT.getString(1),ANT.getString(2)));
+			}
+            bw.write(StringRule.standard("0000"));
+            bw.flush();
 			if(file.exists()){
 				rwl.lockRead();
 				BufferedReader br = new BufferedReader(new FileReader(file));

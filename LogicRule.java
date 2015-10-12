@@ -47,6 +47,9 @@ public class LogicRule {
 	case "1107":{
 		return GroupLogic.changeMemberRight(commit, socket);
 	}
+	case "???":{
+		return "錯誤訊息格式";
+	}
 	}
 	return answer;
 	}

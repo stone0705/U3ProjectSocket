@@ -1,10 +1,19 @@
 import java.sql.*;
+
+import com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 public class Sql {
-	static Connection con;
+	SQLServerConnectionPoolDataSource ds;
 	public Sql(){
 		try{
-			String connectionUrl = "jdbc:sqlserver://122.116.189.126:49172;"+"databaseName=U3project;user=U3sa;password=1234;";
-			con = DriverManager.getConnection(connectionUrl);
+			//String connectionUrl = "jdbc:sqlserver://122.116.189.126:49172;"+"databaseName=U3project;user=U3sa;password=1234;";
+			//con = DriverManager.getConnection(connectionUrl);
+			ds = new SQLServerConnectionPoolDataSource();
+	        ds.setDatabaseName("U3project");           
+	        ds.setUser("U3sa");
+	        ds.setPassword("1234");
+	        ds.setURL("jdbc:sqlserver://122.116.189.126");
+	        ds.setPortNumber(49172);    
 			/*Class.forName("com.mysql.jdbc.Driver");
 		      con = DriverManager.getConnection( 
 		    	      "jdbc:mysql://127.0.0.1:3306/U3project?useUnicode=true", 
@@ -14,7 +23,7 @@ public class Sql {
 			ex.printStackTrace();
 		}
 	}
-	public void close(){
+	public void close(Connection con){
 		try {
 			con.close();
 		} catch (SQLException e) {
@@ -24,6 +33,7 @@ public class Sql {
 	}
 	public String getNickName(String account){
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "SELECT nick_name from theuser where name = ?";
 			pst = con.prepareStatement(SQL);
@@ -39,6 +49,7 @@ public class Sql {
 	public boolean isAddPermit(String account,String group,String founder){
 		boolean exist = false;
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "SELECT add_permit from group_user where u_name = ? and g_name = ? and g_founder = ?";
 			pst = con.prepareStatement(SQL);
@@ -57,6 +68,7 @@ public class Sql {
 	public boolean isMeetingPermit(String account,String group,String founder){
 		boolean exist = false;
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "SELECT meeting_permit from group_user where u_name = ? and g_name = ? and g_founder = ?";
 			pst = con.prepareStatement(SQL);
@@ -75,6 +87,7 @@ public class Sql {
 	public boolean isGroupExist(String founder,String group){
 		boolean exist = false;
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "SELECT * from thegroup where name = ? and founder = ?";
 			pst = con.prepareStatement(SQL);
@@ -92,6 +105,7 @@ public class Sql {
 	public boolean isAddInGroup(String account,String group,String founder){
 		boolean exist = false;
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "SELECT isjoin from group_user where g_name = ? and g_founder = ? and u_name = ?";
 			pst = con.prepareStatement(SQL);
@@ -109,6 +123,7 @@ public class Sql {
 	public boolean isInGroup(String account,String group,String founder){
 		boolean exist = false;
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "SELECT * from group_user where g_name = ? and g_founder = ? and u_name = ?";
 			pst = con.prepareStatement(SQL);
@@ -127,6 +142,7 @@ public class Sql {
 	public boolean isAccountExist(String name){
 		boolean exist = false;
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "SELECT * from theuser where name = ?";
 			pst = con.prepareStatement(SQL);
@@ -143,6 +159,7 @@ public class Sql {
 	public String getAndroidId(String account){
 		String id = "";
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "SELECT android_id from saveuser where u_name = ?";
 			pst = con.prepareStatement(SQL);
@@ -168,6 +185,7 @@ public class Sql {
 		String sqlid = getAndroidId(account);
 		if(sqlid.equals("")){
 			try{
+				Connection con =ds.getConnection();
 				PreparedStatement pst;
 				String SQL = "INSERT into saveuser values(?,?)";
 				pst = con.prepareStatement(SQL);
@@ -179,6 +197,7 @@ public class Sql {
 			}
 		}else{
 			try{
+				Connection con =ds.getConnection();
 				PreparedStatement pst;
 				String SQL = "update saveuser set android_id = ? where u_name = ?";
 				pst = con.prepareStatement(SQL);
@@ -195,6 +214,7 @@ public class Sql {
 		PreparedStatement pst;
 		String SQL = "SELECT password,salt from theuser where name = ?";
 		try{
+			Connection con =ds.getConnection();
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, name);
 			ResultSet rs = pst.executeQuery();
@@ -207,6 +227,7 @@ public class Sql {
 	}
 	public void submitSql(String name,String hash,String salt,String nick_name){
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "INSERT into theuser values(?,?,?,?)";
 			pst = con.prepareStatement(SQL);
@@ -223,6 +244,7 @@ public class Sql {
 		PreparedStatement pst;
 		String SQL;
 		try {
+			Connection con =ds.getConnection();
 			SQL = "select a.id,a.title,a.start_time,a.end_time "
 					+ "from meeting a join group_user b on a.g_name = b.g_name "
 					+ "where a.g_founder = ? and a.g_name = ? and b.u_name = ? "
@@ -247,6 +269,7 @@ public class Sql {
 		param = param.replace("_", "!_");
 		param = "%" + param + "%";
 		try{
+			Connection con =ds.getConnection();
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, param);
 			pst.setString(2, "!");
@@ -264,6 +287,7 @@ public class Sql {
 				+ "from group_user a join thegroup b on a.g_name = b.name and a.g_founder = b.founder "
 				+ "where u_name = ?";
 		try{
+			Connection con =ds.getConnection();
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, account);
 			rs = pst.executeQuery();
@@ -274,6 +298,7 @@ public class Sql {
 	}
 	public void createMeeting(String group,String founder,String title,Timestamp sts,Timestamp ets){
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "INSERT into meeting values(?,?,?,?,?)";
 			pst = con.prepareStatement(SQL);
@@ -289,6 +314,7 @@ public class Sql {
 	}
 	public void createGroup(String account,String nickname,String group){
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "INSERT into thegroup values(?,?,?,?)";
 			pst = con.prepareStatement(SQL);
@@ -321,6 +347,7 @@ public class Sql {
 	}
 	public void applyGroup(String account,String nickname,String group,String founder){
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			long timeInMillis = System.currentTimeMillis();
 	        Timestamp ts = new Timestamp(timeInMillis);
@@ -349,13 +376,14 @@ public class Sql {
 			System.out.println("applyGroup:"+ex.toString());
 		}
 	}
-	public static ResultSet getIsJoinMember(String name,String founder){
+	public ResultSet getIsJoinMember(String name,String founder){
 		ResultSet rs = null;
 		PreparedStatement pst;
 		String SQL = "select u_name,u_nick_name,add_permit,remove_permit,note_permit,meeting_permit"
 				+ ",vote_permit,schdule_permit,isfounder,enter_time from group_user "
 				+ "where g_name = ? and g_founder = ? and isjoin = ?";
 		try{
+			Connection con =ds.getConnection();
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, name);
 			pst.setString(2, founder);
@@ -366,12 +394,13 @@ public class Sql {
 		}
 		return rs;
 	}
-	public static ResultSet getNotJoinMember(String name,String founder){
+	public ResultSet getNotJoinMember(String name,String founder){
 		ResultSet rs = null;
 		PreparedStatement pst;
 		String SQL = "select u_name,u_nick_name,enter_time from group_user "
 				+ "where g_name = ? and g_founder = ? and isjoin = ?";
 		try{
+			Connection con =ds.getConnection();
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, name);
 			pst.setString(2, founder);
@@ -384,6 +413,7 @@ public class Sql {
 	}
 	public void letHeIn(String group,String founder,String u_name){
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "update group_user set isjoin = ? where g_name = ? and g_founder = ? and u_name = ?";
 			pst = con.prepareStatement(SQL);
@@ -398,6 +428,7 @@ public class Sql {
 	}
 	public void setMemberRight(String group,String founder,String u_name,boolean add,boolean remove,boolean note,boolean meeting,boolean vote,boolean sch){
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "update group_user set add_permit = ?,remove_permit = ?,note_permit = ?"
 					+ ",meeting_permit = ?,vote_permit = ?,schdule_permit = ? "
@@ -420,6 +451,7 @@ public class Sql {
 	public ResultSet getANT(String group,String founder){
 		ResultSet rs = null;
 		try{
+			Connection con =ds.getConnection();
 			PreparedStatement pst;
 			String SQL = "select u_name,u_nick_name from group_user "
 				+ "where g_name = ? and g_founder = ?";

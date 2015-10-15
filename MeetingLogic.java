@@ -19,10 +19,6 @@ public class MeetingLogic {
 		String answer = "";
 		mainsocket.meeting_id.put(socket, key);
 		//DB find meeting	
-		if(!mainsocket.meetingFileLock.containsKey(key)){
-			ReadWriteLock wrl = new ReadWriteLock();
-			mainsocket.meetingFileLock.put(key, wrl);
-		}
 		if(mainsocket.meetingmap.containsKey(key)){
 			ArrayList<Socket> socketlist = mainsocket.meetingmap.get(key);
 			socketlist.add(socket);
@@ -66,15 +62,7 @@ public class MeetingLogic {
 	            	return "castmsg:"+e.toString();
 	            }
 	        }
-	        try {
-	        	ReadWriteLock rwl = mainsocket.meetingFileLock.get(key);
-				rwl.lockWrite();
-				writeMeetingLog(key,Msg,account);
-				rwl.unlockWrite();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				return "readwritelock:"+e.toString();
-			}
+        	System.out.println(mainsocket.msgSql.putMeetingMsg(key, account, Msg));
 		}else{
             try {
                 // 創造網路輸出串流
@@ -90,8 +78,8 @@ public class MeetingLogic {
         return "傳送訊息完成";
 	}
 	static void postMeetingLog(String meetingid,String group,String founder,Socket socket){
-		File file = new File(meetingid+".txt");
-		ReadWriteLock rwl = mainsocket.meetingFileLock.get(meetingid);
+		String account,msg;
+		ResultSet msgLog = mainsocket.msgSql.getMeetingMsg(meetingid);
 		try {
             BufferedWriter bw;
             bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
@@ -101,41 +89,17 @@ public class MeetingLogic {
 			}
             bw.write(StringRule.standard("0000"));
             bw.flush();
-			if(file.exists()){
-				rwl.lockRead();
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				while(br.ready()){
-					String Line = br.readLine();
-					String[] divide = Line.split(":", 2);       
-		            bw.write(StringRule.standard("2031",divide[0],divide[1]));
-		            //System.out.println(StringRule.standard("2031",divide[0],divide[1]));           
-				}
-				bw.flush();
-				br.close();
-				rwl.unlockRead();
-			}
+    		while(msgLog.next()){
+    			account = msgLog.getString(1);
+    			msg = msgLog.getString(3);
+    			bw.write(StringRule.standard("2031",account,msg));
+    			bw.flush();
+    		}
             bw.write(StringRule.standard("0000"));
             bw.flush();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	synchronized static void writeMeetingLog(String meetingid,String msg,String account){
-		File file = new File(meetingid+".txt");
-			try {
-				if(!file.exists()){
-				    file.createNewFile();
-				}
-				FileWriter fw = new FileWriter(file,true);
-				fw.append(account+":"+msg+"\n");
-				//fw.flush();
-				fw.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.out.println(e.toString());
-				e.printStackTrace();
-			}
-		
 	}
 }

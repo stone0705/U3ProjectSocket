@@ -10,6 +10,9 @@ import java.net.Socket;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class MeetingLogic {
 	static String firstconnect(String[] commit,Socket socket){
@@ -79,6 +82,7 @@ public class MeetingLogic {
 	}
 	static void postMeetingLog(String meetingid,String group,String founder,Socket socket){
 		String account,msg;
+		Timestamp time;
 		ResultSet msgLog = mainsocket.msgSql.getMeetingMsg(meetingid);
 		try {
             BufferedWriter bw;
@@ -89,12 +93,19 @@ public class MeetingLogic {
 			}
             bw.write(StringRule.standard("0000"));
             bw.flush();
+            ArrayList<msgData> list = new ArrayList();
     		while(msgLog.next()){
     			account = msgLog.getString(1);
+    			time = msgLog.getTimestamp(2);
     			msg = msgLog.getString(3);
-    			bw.write(StringRule.standard("2031",account,msg));
-    			bw.flush();
+    			list.add(new msgData(account,msg,time));
     		}
+			Collections.sort(list);
+			for(int i = 0;i<list.size();i++){
+				msgData data = list.get(i);
+				bw.write(StringRule.standard("2031",data.account,data.msg));
+				bw.flush();
+			}
             bw.write(StringRule.standard("0000"));
             bw.flush();
 		} catch (Exception e) {

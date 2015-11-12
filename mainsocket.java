@@ -16,6 +16,7 @@ public class mainsocket {
     private static int serverport = 5050;
     static Sql sql = new Sql();
     static msgSQL msgSql = new msgSQL();
+    static voteSQL votesql = new voteSQL();
     static ServerSocket serverSocket;
     static HashMap<String,ArrayList<Socket>> meetingmap = new HashMap();
 	public static void main(String[] args){

@@ -14,7 +14,7 @@ public class msgSQL {
         ds.setUser("U3msg");
         ds.setPassword("1234");
         ds.setPortNumber(49172);   
-        ds.setURL("jdbc:sqlserver://122.116.189.126");
+        ds.setURL("jdbc:sqlserver://114.35.125.242");
 	}
 	public String putMeetingMsg(String meetingId,String account,String msg){
 		//meetingId除以20的餘數決定位置
@@ -30,6 +30,7 @@ public class msgSQL {
 			pst.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 			pst.setString(4, msg);
 			pst.execute();
+			
 		}catch(Exception ex){
 			return "putMeetingMsg:"+ex.toString();
 		}
@@ -43,9 +44,11 @@ public class msgSQL {
 		try{
 			Connection con =ds.getConnection();
 			PreparedStatement pst;
-			String SQL = "select username,msg_time,msg_string from msg"+hashId;
+			String SQL = "select username,msg_time,msg_string from msg"+hashId+" where meeting_id = ?";
 			pst = con.prepareStatement(SQL);
+			pst.setInt(1, id);
 			rs = pst.executeQuery();
+			
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}

@@ -12,7 +12,7 @@ public class Sql {
 	        ds.setDatabaseName("U3project");           
 	        ds.setUser("U3sa");
 	        ds.setPassword("1234");
-	        ds.setURL("jdbc:sqlserver://122.116.189.126");
+	        ds.setURL("jdbc:sqlserver://114.35.125.242");
 	        ds.setPortNumber(49172);    
 			/*Class.forName("com.mysql.jdbc.Driver");
 		      con = DriverManager.getConnection( 
@@ -25,7 +25,7 @@ public class Sql {
 	}
 	public void close(Connection con){
 		try {
-			con.close();
+			 con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -40,6 +40,7 @@ public class Sql {
 			pst.setString(1, account);
 			ResultSet rs = pst.executeQuery();
 			rs.next();
+			 
 			return rs.getString(1);
 		}catch(Exception ex){
 			System.out.println(ex);
@@ -60,6 +61,7 @@ public class Sql {
 			if(rs.next()){
 				exist = rs.getBoolean(1);
 			}
+			 
 		}catch(Exception ex){
 			System.out.println(ex);
 		}
@@ -79,6 +81,27 @@ public class Sql {
 			if(rs.next()){
 				exist = rs.getBoolean(1);
 			}
+			 
+		}catch(Exception ex){
+			System.out.println(ex);
+		}
+		return exist;
+	}
+	public boolean isVotePermit(String account,String group,String founder){
+		boolean exist = false;
+		try{
+			Connection con =ds.getConnection();
+			PreparedStatement pst;
+			String SQL = "SELECT vote_permit from group_user where u_name = ? and g_name = ? and g_founder = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, account);
+			pst.setString(2, group);
+			pst.setString(3, founder);
+			ResultSet rs = pst.executeQuery();
+			if(rs.next()){
+				exist = rs.getBoolean(1);
+			}
+			 
 		}catch(Exception ex){
 			System.out.println(ex);
 		}
@@ -97,6 +120,7 @@ public class Sql {
 			if(rs.next()){
 				exist = true;
 			}
+			 
 		}catch(Exception ex){
 			System.out.println(ex);
 		}
@@ -115,6 +139,7 @@ public class Sql {
 			ResultSet rs = pst.executeQuery();
 			rs.next();
 			exist = rs.getBoolean(1);
+			 
 		}catch(Exception ex){
 			System.out.println("isInGroup:"+ex.toString());
 		}
@@ -134,6 +159,7 @@ public class Sql {
 			if(rs.next()){
 				exist = true;
 			}
+			 
 		}catch(Exception ex){
 			System.out.println("isInGroup:"+ex.toString());
 		}
@@ -151,6 +177,7 @@ public class Sql {
 			if(rs.next()){
 				exist = true;
 			}
+			 
 		}catch(Exception ex){
 			System.out.println(ex);
 		}
@@ -168,6 +195,7 @@ public class Sql {
 			if(rs.next()){
 				id = rs.getString(1);
 			}
+			 
 		}catch(Exception ex){
 			System.out.println(ex);
 		}
@@ -192,6 +220,7 @@ public class Sql {
 				pst.setString(1, account);
 				pst.setString(2, android_id);
 				pst.execute();
+				 
 			}catch(Exception ex){
 				System.out.println(ex);
 			}
@@ -204,6 +233,7 @@ public class Sql {
 				pst.setString(1, android_id);
 				pst.setString(2, account);
 				pst.execute();
+				 
 			}catch(Exception ex){
 				System.out.println(ex);
 			}
@@ -221,6 +251,7 @@ public class Sql {
 			rs.next();
 			answer[0] = rs.getString(1);
 			answer[1] = rs.getString(2);
+			 
 		}catch(Exception ex){			
 		}
 		return answer;
@@ -236,6 +267,7 @@ public class Sql {
 			pst.setString(3, salt);
 			pst.setString(4, nick_name);
 			pst.execute();
+			 
 		}catch(Exception ex){	
 		}
 	}
@@ -254,6 +286,7 @@ public class Sql {
 			pst.setString(2, g_name);
 			pst.setString(3, name);
 			rs = pst.executeQuery();
+			 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -274,6 +307,7 @@ public class Sql {
 			pst.setString(1, param);
 			pst.setString(2, "!");
 			rs = pst.executeQuery();
+			 
 			return rs;
 		}catch(Exception ex){
 			System.out.println("SQL searchGroup:"+ex.toString());
@@ -291,6 +325,7 @@ public class Sql {
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, account);
 			rs = pst.executeQuery();
+			 
 		}catch(Exception ex){
 			System.out.println("selectGroup SQL:"+ex.toString());
 		}
@@ -308,6 +343,7 @@ public class Sql {
 			pst.setString(4, group);
 			pst.setString(5, founder);
 			pst.execute();
+			 
 			}catch(Exception ex){
 				System.out.println("createMeeting SQL:"+ex.toString());
 			}
@@ -341,6 +377,7 @@ public class Sql {
 			pst.setBoolean(12, true);
 			pst.setTimestamp(13, ts);
 			pst.execute();
+			 
 		}catch(Exception ex){	
 			System.out.println(ex.toString());
 		}
@@ -372,6 +409,7 @@ public class Sql {
 			pst.setString(1, group);
 			pst.setString(2, founder);
 			pst.execute();
+			 
 		}catch(Exception ex){
 			System.out.println("applyGroup:"+ex.toString());
 		}
@@ -389,6 +427,7 @@ public class Sql {
 			pst.setString(2, founder);
 			pst.setBoolean(3, true);
 			rs = pst.executeQuery();
+			 
 		}catch(Exception ex){
 			System.out.println("getIsJoinMember SQL:"+ex.toString());
 		}
@@ -406,6 +445,7 @@ public class Sql {
 			pst.setString(2, founder);
 			pst.setBoolean(3, false);
 			rs = pst.executeQuery();
+			 
 		}catch(Exception ex){
 			System.out.println("getIsJoinMember SQL:"+ex.toString());
 		}
@@ -422,6 +462,7 @@ public class Sql {
 			pst.setString(3, founder);
 			pst.setString(4, u_name);
 			pst.execute();
+			 
 		}catch(Exception ex){
 			System.out.println("LetHeIn SQL:"+ex.toString());
 		}
@@ -444,6 +485,7 @@ public class Sql {
 			pst.setString(8, founder);
 			pst.setString(9, u_name);
 			pst.execute();
+			 
 		}catch(Exception ex){
 			System.out.println("changeMemberRight SQL:"+ex.toString());
 		}
@@ -459,11 +501,48 @@ public class Sql {
 			pst.setString(1, group);
 			pst.setString(2, founder);
 			rs = pst.executeQuery();
-			
+			 
 		}catch(Exception ex){
 			System.out.println("ANT SQL:"+ex.toString());
 		}
 		return rs;
 	}
-
+	public String createNewVote(String group,String founder,String createman,String title,Timestamp sts,Timestamp ets){
+		String key = "";
+		try{
+			Connection con =ds.getConnection();
+			PreparedStatement pst;
+			String SQL = "INSERT into group_vote(g_name,g_founder,title,createman,start_time,end_time) values(?,?,?,?,?,?)";
+			pst = con.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+			pst.setString(1, group);
+			pst.setString(2, founder);
+			pst.setString(3, title);
+			pst.setString(4, createman);
+			pst.setTimestamp(5, sts);
+			pst.setTimestamp(6, ets);
+			pst.execute();
+			ResultSet keyset = pst.getGeneratedKeys();
+			if(keyset.next()){
+				key = keyset.getString(1);
+			}
+			}catch(Exception ex){
+				System.out.println("createMeeting SQL:"+ex.toString());
+			}
+		return key;
+	}
+	public void userVote(String vote_id,String option_id,String name){
+		try{
+			Connection con =ds.getConnection();
+			PreparedStatement pst;
+			String SQL = "INSERT into vote_user(vote_id,u_name,option_id,isvote) values(?,?,?,?)";
+			pst = con.prepareStatement(SQL);
+			pst.setInt(1, Integer.parseInt(vote_id));
+			pst.setString(2, name);
+			pst.setInt(3, Integer.parseInt(option_id));
+			pst.setBoolean(4, false);
+			pst.execute();
+			}catch(Exception ex){
+				System.out.println("createMeeting SQL:"+ex.toString());
+			}
+	}
 }

@@ -58,7 +58,6 @@ public class MeetingLogic {
 	 
 	                // 寫入訊息到串流
 	                bw.write(standardMsg);
-	 
 	                // 立即發送
 	                bw.flush();
 	            } catch (IOException e) {

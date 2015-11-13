@@ -70,6 +70,10 @@ public class StringRule {
         rulemap.put("n1040",8);
         //創建Vote選項  1041 帳號 android_id 群組 founder vote_id option_string
         rulemap.put("n1041",7);
+        //進入投票 1042 帳號 android_id vote_id
+        rulemap.put("n1042", 4);
+        //投票 1043 帳號 android_id vote_id option_id
+        rulemap.put("n1043", 5);
         //獲得筆記列表 1070 帳號 android_id 群組 founder
         rulemap.put("n1070", 5);
         //獲得會議列表 1071 帳號 android_id 群組 founder
@@ -102,6 +106,12 @@ public class StringRule {
         rulemap.put("n2032",3);
         //傳送Vote_id 2040 vote_id
         rulemap.put("n2040", 2);
+        //傳送vote選項  2041 id content number
+        rulemap.put("n2041", 4);
+        //投票成功 2042
+        rulemap.put("n2042", 1);
+        //已經投過票了 2043
+        rulemap.put("n2043", 1);
         //註冊成功 2000
         rulemap.put("n2000", 1);
         //註冊失敗 有相同的帳號 2001

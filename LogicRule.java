@@ -26,6 +26,12 @@ public class LogicRule {
 	case"1041":{
 		return VoteLogic.addOptionToVote(commit, socket);
 	}
+	case"1042":{
+		return VoteLogic.enterVote(commit, socket);
+	}
+	case"1043":{
+		return VoteLogic.vote(commit, socket);
+	}
 	case"1071":{
 		return masterpageLogic.getMeetingList(commit, socket);
 	}

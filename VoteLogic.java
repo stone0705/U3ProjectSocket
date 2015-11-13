@@ -1,6 +1,7 @@
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 
 
@@ -68,6 +69,62 @@ public class VoteLogic {
 					bw.write(StringRule.standard("2079"));
 					bw.flush();
 					return "不在群組中";
+				}
+			}else{
+				bw.write(StringRule.standard("2077"));
+				bw.flush();
+				return "帳號已在其他裝置登入";
+			}
+		}catch(Exception ex){
+			return "createMeeting:"+ex.toString();
+		}
+	}
+	static String enterVote(String[] commit,Socket socket){
+		String account = commit[1];
+		String android_id = commit[2];
+		String vote_id = commit[3];
+		ResultSet rs;
+		try{
+			BufferedWriter bw;
+			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+			if(mainsocket.sql.compareAndroidID(account, android_id)){
+				rs = mainsocket.votesql.getAlloption(vote_id);
+				while(rs.next()){
+					bw.write(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
+					System.out.println(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
+					bw.flush();
+				}
+				bw.write(StringRule.standard("0000"));
+				bw.flush();
+				return "傳送選項完畢";
+			}else{
+				bw.write(StringRule.standard("2077"));
+				bw.flush();
+				return "帳號已在其他裝置登入";
+			}
+		}catch(Exception ex){
+			return "createMeeting:"+ex.toString();
+		}
+	}
+	static String vote(String[] commit,Socket socket){
+		String account = commit[1];
+		String android_id = commit[2];
+		String vote_id = commit[3];
+		String option_id = commit[4];
+		try{
+			BufferedWriter bw;
+			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+			if(mainsocket.sql.compareAndroidID(account, android_id)){
+				if(!mainsocket.sql.isUserVote(vote_id, account)){
+					mainsocket.sql.userVote(vote_id, option_id, account);
+					mainsocket.votesql.userVote(vote_id, option_id);
+					bw.write(StringRule.standard("2042"));
+					bw.flush();
+					return "投票成功";
+				}else{
+					bw.write(StringRule.standard("2043"));
+					bw.flush();
+					return "已經投過票了";
 				}
 			}else{
 				bw.write(StringRule.standard("2077"));

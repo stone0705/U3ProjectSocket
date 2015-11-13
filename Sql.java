@@ -141,7 +141,7 @@ public class Sql {
 			exist = rs.getBoolean(1);
 			 
 		}catch(Exception ex){
-			System.out.println("isInGroup:"+ex.toString());
+			System.out.println("isInGroup:"+ex.getStackTrace());
 		}
 		return exist;
 	}
@@ -161,7 +161,7 @@ public class Sql {
 			}
 			 
 		}catch(Exception ex){
-			System.out.println("isInGroup:"+ex.toString());
+			System.out.println("isInGroup:"+ex.getStackTrace());
 		}
 		return exist;
 	}
@@ -332,7 +332,7 @@ public class Sql {
 			 
 			return rs;
 		}catch(Exception ex){
-			System.out.println("SQL searchGroup:"+ex.toString());
+			System.out.println("SQL searchGroup:"+ex.getStackTrace());
 		}
 		return rs;
 	}
@@ -349,7 +349,7 @@ public class Sql {
 			rs = pst.executeQuery();
 			 
 		}catch(Exception ex){
-			System.out.println("selectGroup SQL:"+ex.toString());
+			System.out.println("selectGroup SQL:"+ex.getStackTrace());
 		}
 		return rs;
 	}
@@ -367,7 +367,7 @@ public class Sql {
 			pst.execute();
 			 
 			}catch(Exception ex){
-				System.out.println("createMeeting SQL:"+ex.toString());
+				System.out.println("createMeeting SQL:"+ex.getStackTrace());
 			}
 	}
 	public void createGroup(String account,String nickname,String group){
@@ -401,7 +401,7 @@ public class Sql {
 			pst.execute();
 			 
 		}catch(Exception ex){	
-			System.out.println(ex.toString());
+			System.out.println(ex.getStackTrace());
 		}
 	}
 	public void applyGroup(String account,String nickname,String group,String founder){
@@ -433,7 +433,7 @@ public class Sql {
 			pst.execute();
 			 
 		}catch(Exception ex){
-			System.out.println("applyGroup:"+ex.toString());
+			System.out.println("applyGroup:"+ex.getStackTrace());
 		}
 	}
 	public ResultSet getIsJoinMember(String name,String founder){
@@ -451,7 +451,7 @@ public class Sql {
 			rs = pst.executeQuery();
 			 
 		}catch(Exception ex){
-			System.out.println("getIsJoinMember SQL:"+ex.toString());
+			System.out.println("getIsJoinMember SQL:"+ex.getStackTrace());
 		}
 		return rs;
 	}
@@ -469,7 +469,7 @@ public class Sql {
 			rs = pst.executeQuery();
 			 
 		}catch(Exception ex){
-			System.out.println("getIsJoinMember SQL:"+ex.toString());
+			System.out.println("getIsJoinMember SQL:"+ex.getStackTrace());
 		}
 		return rs;
 	}
@@ -486,7 +486,7 @@ public class Sql {
 			pst.execute();
 			 
 		}catch(Exception ex){
-			System.out.println("LetHeIn SQL:"+ex.toString());
+			System.out.println("LetHeIn SQL:"+ex.getStackTrace());
 		}
 	}
 	public void setMemberRight(String group,String founder,String u_name,boolean add,boolean remove,boolean note,boolean meeting,boolean vote,boolean sch){
@@ -509,7 +509,7 @@ public class Sql {
 			pst.execute();
 			 
 		}catch(Exception ex){
-			System.out.println("changeMemberRight SQL:"+ex.toString());
+			System.out.println("changeMemberRight SQL:"+ex.getStackTrace());
 		}
 	}
 	public ResultSet getANT(String group,String founder){
@@ -525,7 +525,7 @@ public class Sql {
 			rs = pst.executeQuery();
 			 
 		}catch(Exception ex){
-			System.out.println("ANT SQL:"+ex.toString());
+			System.out.println("ANT SQL:"+ex.getStackTrace());
 		}
 		return rs;
 	}
@@ -548,7 +548,7 @@ public class Sql {
 				key = keyset.getString(1);
 			}
 			}catch(Exception ex){
-				System.out.println("createMeeting SQL:"+ex.toString());
+				System.out.println("createMeeting SQL:"+ex.getStackTrace());
 			}
 		return key;
 	}
@@ -561,10 +561,29 @@ public class Sql {
 			pst.setInt(1, Integer.parseInt(vote_id));
 			pst.setString(2, name);
 			pst.setInt(3, Integer.parseInt(option_id));
-			pst.setBoolean(4, false);
+			pst.setBoolean(4, true);
 			pst.execute();
 			}catch(Exception ex){
-				System.out.println("createMeeting SQL:"+ex.toString());
+				System.out.println("userVote SQL:"+ex.getStackTrace());
 			}
+	}
+	public boolean isUserVote(String vote_id,String name){
+		try{
+			Connection con =ds.getConnection();
+			PreparedStatement pst;
+			String SQL = "select isvote from vote_user where u_name = ? and vote_id = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, name);
+			pst.setInt(2,Integer.parseInt(vote_id));
+			ResultSet rs =  pst.executeQuery();
+			if(rs.next()){
+				return rs.getBoolean(1);
+			}else{
+				return false;
+			}
+			}catch(Exception ex){
+				System.out.println("isUserVoteSQL:"+ex.getStackTrace());
+			}
+		return false;
 	}
 }

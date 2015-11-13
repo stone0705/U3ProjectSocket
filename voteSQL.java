@@ -24,6 +24,8 @@ public class voteSQL {
 			PreparedStatement pst;
 			String SQL = "insert into vote"+hashId+"(vote_id,vote_string,number) values(?,?,0)";
 			pst = con.prepareStatement(SQL);
+			pst.setInt(1, id);
+			pst.setString(2, content);
 			pst.execute();
 		}catch(Exception ex){
 			return "putVote:"+ex.toString();
@@ -36,13 +38,14 @@ public class voteSQL {
 		try{
 			Connection con =ds.getConnection();
 			PreparedStatement pst;
-			String SQL = "update vote"+hashId+" set number = number + 1 where vote_id = ? and option_id = ?";
+			String SQL = "update vote"+hashId+" set number = number + 1 where vote_id = ? and id = ?";
 			pst = con.prepareStatement(SQL);
 			pst.setInt(1, id);
 			pst.setInt(2, Integer.parseInt(option_id));
 			pst.execute();
 		}catch(Exception ex){
-			System.out.println(ex.getStackTrace());
+			ex.getStackTrace();
+			System.out.println("userVote"+ex.toString());
 		}
 	}
 	public ResultSet getAlloption(String voteId){

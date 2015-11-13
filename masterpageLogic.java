@@ -73,7 +73,6 @@ public class masterpageLogic {
 			}
 			while(rs.next()){ 
                 String standardMsg = StringRule.standard("2072",rs.getString(1),rs.getString(2),rs.getTimestamp(3).toString(),rs.getTimestamp(4).toString(),rs.getString(5));
-                System.out.println(standardMsg);
                 bw.write(standardMsg);
                 bw.flush();
 			}

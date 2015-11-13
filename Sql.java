@@ -271,6 +271,28 @@ public class Sql {
 		}catch(Exception ex){	
 		}
 	}
+	public ResultSet getVoteSql(String name,String g_name,String g_founder){
+		ResultSet rs = null;
+		PreparedStatement pst;
+		String SQL;
+		try {
+			Connection con =ds.getConnection();
+			SQL = "select a.id,a.title,a.start_time,a.end_time,createman "
+					+ "from group_vote a join group_user b on a.g_name = b.g_name "
+					+ "where a.g_founder = ? and a.g_name = ? and b.u_name = ? "
+					+ "order by start_time DESC ";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, g_founder);
+			pst.setString(2, g_name);
+			pst.setString(3, name);
+			rs = pst.executeQuery();
+			 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rs;
+	}
 	public ResultSet getMeetingSql(String name,String g_name,String g_founder){
 		ResultSet rs = null;
 		PreparedStatement pst;

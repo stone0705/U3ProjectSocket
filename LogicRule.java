@@ -29,6 +29,9 @@ public class LogicRule {
 	case"1071":{
 		return masterpageLogic.getMeetingList(commit, socket);
 	}
+	case"1072":{
+		return masterpageLogic.getVoteList(commit, socket);
+	}
 	case"1100":{
 		return GroupLogic.createGroup(commit, socket);
 	}

@@ -84,24 +84,52 @@ public class VoteLogic {
 		String android_id = commit[2];
 		String vote_id = commit[3];
 		ResultSet rs;
+		int isTime = mainsocket.sql.VoteTimeTest(vote_id);
 		try{
 			BufferedWriter bw;
 			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
-			if(mainsocket.sql.compareAndroidID(account, android_id)){
-				rs = mainsocket.votesql.getAlloption(vote_id);
-				while(rs.next()){
-					bw.write(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
-					System.out.println(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
-					bw.flush();
-				}
-				bw.write(StringRule.standard("0000"));
+			switch(isTime){
+			case(-1):{
+				bw.write(StringRule.standard("2197"));
 				bw.flush();
-				return "傳送選項完畢";
-			}else{
-				bw.write(StringRule.standard("2077"));
-				bw.flush();
-				return "帳號已在其他裝置登入";
+				return"投票尚未開始";
 			}
+			case(0):{
+				if(mainsocket.sql.compareAndroidID(account, android_id)){
+					rs = mainsocket.votesql.getAlloption(vote_id);
+					while(rs.next()){
+						bw.write(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
+						System.out.println(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
+						bw.flush();
+					}
+					bw.write(StringRule.standard("0000"));
+					bw.flush();
+					return "傳送選項完畢";
+				}else{
+					bw.write(StringRule.standard("2077"));
+					bw.flush();
+					return "帳號已在其他裝置登入";
+				}
+			}
+			case(1):{
+				if(mainsocket.sql.compareAndroidID(account, android_id)){
+					rs = mainsocket.votesql.getAlloption(vote_id);
+					while(rs.next()){
+						bw.write(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
+						System.out.println(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
+						bw.flush();
+					}
+					bw.write(StringRule.standard("2198"));
+					bw.flush();
+					return "傳送選項完畢  投票已經結束";
+				}else{
+					bw.write(StringRule.standard("2077"));
+					bw.flush();
+					return "帳號已在其他裝置登入";
+				}
+			}
+			}
+			return "投票時間錯誤";
 		}catch(Exception ex){
 			return "createMeeting:"+ex.toString();
 		}
@@ -111,28 +139,32 @@ public class VoteLogic {
 		String android_id = commit[2];
 		String vote_id = commit[3];
 		String option_id = commit[4];
-		try{
-			BufferedWriter bw;
-			bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
-			if(mainsocket.sql.compareAndroidID(account, android_id)){
-				if(!mainsocket.sql.isUserVote(vote_id, account)){
-					mainsocket.sql.userVote(vote_id, option_id, account);
-					mainsocket.votesql.userVote(vote_id, option_id);
-					bw.write(StringRule.standard("2042"));
-					bw.flush();
-					return "投票成功";
+		int isTime = mainsocket.sql.VoteTimeTest(vote_id);
+		if(isTime == 0){
+			try{
+				BufferedWriter bw;
+				bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+				if(mainsocket.sql.compareAndroidID(account, android_id)){
+					if(!mainsocket.sql.isUserVote(vote_id, account)){
+						mainsocket.sql.userVote(vote_id, option_id, account);
+						mainsocket.votesql.userVote(vote_id, option_id);
+						bw.write(StringRule.standard("2042"));
+						bw.flush();
+						return "投票成功";
+					}else{
+						bw.write(StringRule.standard("2043"));
+						bw.flush();
+						return "已經投過票了";
+					}
 				}else{
-					bw.write(StringRule.standard("2043"));
+					bw.write(StringRule.standard("2077"));
 					bw.flush();
-					return "已經投過票了";
+					return "帳號已在其他裝置登入";
 				}
-			}else{
-				bw.write(StringRule.standard("2077"));
-				bw.flush();
-				return "帳號已在其他裝置登入";
+			}catch(Exception ex){
+				return "createMeeting:"+ex.toString();
 			}
-		}catch(Exception ex){
-			return "createMeeting:"+ex.toString();
 		}
+		return"不在時間範圍內";
 	}
 }

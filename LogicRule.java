@@ -11,6 +11,9 @@ public class LogicRule {
 	case"1010":{
 		return AccountLogic.login(commit,socket);
 	}
+	case"1020":{
+		return RemindLogic.createRemind(commit, socket);
+	}
 	case"1030":{
 		return GroupLogic.createMeeting(commit, socket);
 	}
@@ -31,6 +34,9 @@ public class LogicRule {
 	}
 	case"1043":{
 		return VoteLogic.vote(commit, socket);
+	}
+	case"1070":{
+		return masterpageLogic.getRemidList(commit, socket);
 	}
 	case"1071":{
 		return masterpageLogic.getMeetingList(commit, socket);

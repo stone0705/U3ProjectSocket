@@ -87,6 +87,26 @@ public class Sql {
 		}
 		return exist;
 	}
+	public boolean isRemindPermit(String account,String group,String founder){
+		boolean exist = false;
+		try{
+			Connection con =ds.getConnection();
+			PreparedStatement pst;
+			String SQL = "SELECT schdule_permit from group_user where u_name = ? and g_name = ? and g_founder = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, account);
+			pst.setString(2, group);
+			pst.setString(3, founder);
+			ResultSet rs = pst.executeQuery();
+			if(rs.next()){
+				exist = rs.getBoolean(1);
+			}
+			 
+		}catch(Exception ex){
+			System.out.println(ex);
+		}
+		return exist;
+	}
 	public boolean isVotePermit(String account,String group,String founder){
 		boolean exist = false;
 		try{
@@ -303,6 +323,28 @@ public class Sql {
 					+ "from meeting a join group_user b on a.g_name = b.g_name "
 					+ "where a.g_founder = ? and a.g_name = ? and b.u_name = ? "
 					+ "order by start_time DESC ";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, g_founder);
+			pst.setString(2, g_name);
+			pst.setString(3, name);
+			rs = pst.executeQuery();
+			 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rs;
+	}
+	public ResultSet getRemindSql(String name,String g_name,String g_founder){
+		ResultSet rs = null;
+		PreparedStatement pst;
+		String SQL;
+		try {
+			Connection con =ds.getConnection();
+			SQL = "select a.id,a.title,a.content,a.thetime,a.createman "
+					+ "from group_remind a join group_user b on a.g_name = b.g_name "
+					+ "where a.g_founder = ? and a.g_name = ? and b.u_name = ? "
+					+ "order by thetime DESC ";
 			pst = con.prepareStatement(SQL);
 			pst.setString(1, g_founder);
 			pst.setString(2, g_name);
@@ -585,5 +627,53 @@ public class Sql {
 				System.out.println("isUserVoteSQL:"+ex.getStackTrace());
 			}
 		return false;
+	}
+	public int VoteTimeTest(String voteId){
+		//-1代表尚未開始  0表示正在時間中  1表示已經結束
+		int answer = -2;
+		ResultSet rs = null;
+		PreparedStatement pst;
+		String SQL;
+		Timestamp now = new Timestamp(System.currentTimeMillis()); 
+		Timestamp start;
+		Timestamp end;
+		try {
+			Connection con =ds.getConnection();
+			SQL = "select start_time,end_time from group_vote where id = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, voteId);
+			rs = pst.executeQuery();
+			rs.next();
+			start = rs.getTimestamp(1);
+			end = rs.getTimestamp(2);
+			if(now.compareTo(start) < 0 ){
+				answer = -1;
+			}else if(now.compareTo(end) <= 0){
+				answer = 0;
+			}else{
+				answer = 1;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return answer;
+	}
+	public void createRemind(String group,String founder,String createman,String title,String content,Timestamp time){
+		try{
+			Connection con =ds.getConnection();
+			PreparedStatement pst;
+			String SQL = "INSERT into group_remind(g_name,g_founder,title,createman,content,thetime) values(?,?,?,?,?,?)";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, group);
+			pst.setString(2, founder);
+			pst.setString(3, title);
+			pst.setString(4, createman);
+			pst.setString(5, content);
+			pst.setTimestamp(6, time);
+			pst.execute(); 
+			}catch(Exception ex){
+				System.out.println("createRemind SQL:"+ex.getStackTrace());
+			}
 	}
 }

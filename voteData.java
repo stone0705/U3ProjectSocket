@@ -12,6 +12,6 @@ public class voteData implements Comparable<voteData> {
 	}
 	@Override
 	public int compareTo(voteData another) {
-		return Integer.compare(this.number,another.number);
+		return Integer.compare(another.number,this.number);
 	}
 }

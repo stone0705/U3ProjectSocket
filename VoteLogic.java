@@ -3,6 +3,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class VoteLogic {
@@ -83,6 +85,7 @@ public class VoteLogic {
 		String account = commit[1];
 		String android_id = commit[2];
 		String vote_id = commit[3];
+		ArrayList<voteData> list = new ArrayList<voteData>();
 		ResultSet rs;
 		int isTime = mainsocket.sql.VoteTimeTest(vote_id);
 		try{
@@ -98,8 +101,12 @@ public class VoteLogic {
 				if(mainsocket.sql.compareAndroidID(account, android_id)){
 					rs = mainsocket.votesql.getAlloption(vote_id);
 					while(rs.next()){
-						bw.write(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
-						System.out.println(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
+						list.add(new voteData(rs.getString(2),rs.getInt(1),rs.getInt(3)));
+					}
+					Collections.sort(list);
+					for(int i = 0;i<list.size();i++){
+						voteData data = list.get(i);
+						bw.write(StringRule.standard("2041",data.option_id+"",data.content,data.number+""));
 						bw.flush();
 					}
 					bw.write(StringRule.standard("0000"));
@@ -115,8 +122,12 @@ public class VoteLogic {
 				if(mainsocket.sql.compareAndroidID(account, android_id)){
 					rs = mainsocket.votesql.getAlloption(vote_id);
 					while(rs.next()){
-						bw.write(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
-						System.out.println(StringRule.standard("2041",rs.getString(1),rs.getString(2),rs.getString(3)));
+						list.add(new voteData(rs.getString(2),rs.getInt(1),rs.getInt(3)));
+					}
+					Collections.sort(list);
+					for(int i = 0;i<list.size();i++){
+						voteData data = list.get(i);
+						bw.write(StringRule.standard("2041",data.option_id+"",data.content,data.number+""));
 						bw.flush();
 					}
 					bw.write(StringRule.standard("2198"));

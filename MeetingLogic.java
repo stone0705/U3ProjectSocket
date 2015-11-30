@@ -25,22 +25,50 @@ public class MeetingLogic {
 		if(mainsocket.meetingmap.containsKey(key)){
 			ArrayList<Socket> socketlist = mainsocket.meetingmap.get(key);
 			socketlist.add(socket);
-			//post txt
 		}else{
 			mainsocket.meetingmap.put(key,new ArrayList<Socket>());
 			ArrayList<Socket> socketlist = mainsocket.meetingmap.get(key);
 			socketlist.add(socket);
-			//post txt
 		}
-		postMeetingLog(key,group,founder,socket);
+		switch(mainsocket.sql.MeetingTimeTest(key)){
+		case(-1):{
+			try{
+				BufferedWriter bw;
+				bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+				bw.write(StringRule.standard("2197"));
+				bw.flush();
+				return"會議尚未開始";
+			}catch(Exception ex){
+				return "firstconnect" + ex.toString();
+			}
+		}
+		case(0):{
+			postMeetingLog(key,group,founder,socket,false);
+			return answer;
+		}
+		case(1):{
+			postMeetingLog(key,group,founder,socket,true);
+			return "會議已經結束";
+		}
+		}
 		return answer;
 	}
 	static String receice(String[] commit,Socket socket){
 		String key = commit[3];
 		String account = commit[1];
 		String msg = commit[2];	
-		//save to txt
-		return castmsg(account,msg,key,commit[4],socket);
+		switch(mainsocket.sql.MeetingTimeTest(key)){
+		case(-1):{
+			return"會議尚未開始";
+		}
+		case(0):{
+			return castmsg(account,msg,key,commit[4],socket);
+		}
+		case(1):{
+			return "會議已經結束";
+		}
+		}
+		return "";
 	}
 	private static String castmsg(String account,String Msg,String key,String android_id,Socket mysocket){
 		if(mainsocket.sql.compareAndroidID(account, android_id)){
@@ -79,7 +107,7 @@ public class MeetingLogic {
 		}
         return "傳送訊息完成";
 	}
-	static void postMeetingLog(String meetingid,String group,String founder,Socket socket){
+	static void postMeetingLog(String meetingid,String group,String founder,Socket socket,boolean isFinish){
 		String account,msg;
 		Timestamp time;
 		ResultSet msgLog = mainsocket.msgSql.getMeetingMsg(meetingid);
@@ -105,7 +133,11 @@ public class MeetingLogic {
 				bw.write(StringRule.standard("2031",data.account,data.msg));
 				bw.flush();
 			}
-            bw.write(StringRule.standard("0000"));
+			if(isFinish){
+				bw.write(StringRule.standard("2198"));
+			}else{
+				bw.write(StringRule.standard("0000"));
+			} 
             bw.flush();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

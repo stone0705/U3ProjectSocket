@@ -659,6 +659,37 @@ public class Sql {
 		}
 		return answer;
 	}
+	public int MeetingTimeTest(String meetingId){
+		//-1代表尚未開始  0表示正在時間中  1表示已經結束
+		int answer = -2;
+		ResultSet rs = null;
+		PreparedStatement pst;
+		String SQL;
+		Timestamp now = new Timestamp(System.currentTimeMillis()); 
+		Timestamp start;
+		Timestamp end;
+		try {
+			Connection con =ds.getConnection();
+			SQL = "select start_time,end_time from meeting where id = ?";
+			pst = con.prepareStatement(SQL);
+			pst.setString(1, meetingId);
+			rs = pst.executeQuery();
+			rs.next();
+			start = rs.getTimestamp(1);
+			end = rs.getTimestamp(2);
+			if(now.compareTo(start) < 0 ){
+				answer = -1;
+			}else if(now.compareTo(end) <= 0){
+				answer = 0;
+			}else{
+				answer = 1;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return answer;
+	}
 	public void createRemind(String group,String founder,String createman,String title,String content,Timestamp time){
 		try{
 			Connection con =ds.getConnection();
